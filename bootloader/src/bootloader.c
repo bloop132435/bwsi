@@ -21,7 +21,7 @@ long program_flash(uint32_t, unsigned char*, unsigned int);
 
 
 // TODO: Write this in bl buide
-char arr[17][200] = {
+char keys[200][17] = {
 	/* Write Here */ "",
 	/* Write Here */ "",
 	/* Write Here */ "",
