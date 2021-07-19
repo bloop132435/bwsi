@@ -39,7 +39,7 @@ def make_bootloader():
     f.write(signature.decode() + "\n")
     h = SHA256.new()
     h.update(signature)
-    
+
     #creating keys and writing to secret output txt
     keys = [b"" for _ in range(200)]
     for i in range(200):
@@ -47,31 +47,34 @@ def make_bootloader():
     for i in range(200):
         f.write(keys[i].decode() + "\n")
     f.close()
-    
-    
-    # opening bootloader and copying the before (no keys inside/original bootloader.c) and creating the after (keys inside bootloader.c) 
-    bc = open("design-challenge-2021-team-group-4/bootloader/src/bootloader.c", "r")
+
+    # opening bootloader and copying the before (no keys inside/original bootloader.c) and creating the after (keys inside bootloader.c)
+    bc = open("../bootloader/src/bootloader.c", "rb")
     after = []
     before = []
     x = 0
     for l in bc.readlines():
         before.append(l)
-        if "Write Here" in l:
+        if "Write Here" in l.decode():
             # Add key
-            index = l.find('""')
+            index = l.find('\"\"'.encode())
             final = l[:index] + keys[x] + l[index:]
             after.append(final)
+<<<<<<< HEAD
             x+=1
+=======
+            x += 1
+>>>>>>> 8e7e5e84420a3170252d845c667bcf22331488a1
         else:
             after.append(l)
     bc.close()
-    
+
     # rewriting bootloader.c to the after that was created in the step above
-    bc = open("design-challenge-2021-team-group-4/bootloader/src/bootloader.c", "w")
+    bc = open("../bootloader/src/bootloader.c", "w")
     for i in after:
         f.write(i)
     bc.close()
-    
+
     # making bootloader
     # Change into directory containing bootloader.
     bootloader = FILE_DIR / '..' / 'bootloader'
@@ -79,14 +82,14 @@ def make_bootloader():
 
     subprocess.call('make clean', shell=True)
     status = subprocess.call('make')
-    
-    
+
     #opening bootloader.c and removing all the keys/reverting it
-    bc = open("design-challenge-2021-team-group-4/bootloader/src/bootloader.c", "w")
+    bc = open("design-challenge-2021-team-group-4/bootloader/src/bootloader.c",
+              "w")
     for i in before:
         bc.write(i)
-    b.close()
-    
+    bc.close()
+
     # Return True if make returned 0, otherwise return False.
     return (status == 0)
 

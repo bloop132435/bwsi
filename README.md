@@ -15,7 +15,7 @@ Approved for public release. Distribution unlimited PR_21-00407-6.
 	- [x] Authentication Check
 	- [x] Metadata
 	- [x] Data frames
-- [ ] BL Build
+- [x] BL Build
 	- [x] Generating signature and keys
 	- [x] Adding it to bootloader
 	- [x] Making bootloader

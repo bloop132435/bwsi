@@ -17,11 +17,11 @@
 void load_initial_firmware(void);
 void load_firmware(void);
 void boot_firmware(void);
-long program_flash(uint32_t, unsigned char*, unsigned int);S
+long program_flash(uint32_t, unsigned char*, unsigned int);
 
 
 // TODO: Write this in bl build
-char arr[17][200] = {
+char keys[200][17] = {
 	/* Write Here */ "",
 	/* Write Here */ "",
 	/* Write Here */ "",
@@ -254,8 +254,6 @@ uint16_t *fw_size_address = (uint16_t *) (METADATA_BASE + 2);
 uint8_t *fw_release_message_address;
 
 
-// Firmware Buffer
-unsigned char data[FLASH_PAGESIZE];
 
 
 int main(void) {
@@ -329,10 +327,9 @@ void load_initial_firmware(void) {
  */
 void load_firmware(void)
 {
-  int frame_length = 0;
-  int read = 0;
-  uint32_t rcv = 0;
+	// Authentication check
 
+<<<<<<< HEAD
   uint32_t data_index = 0;
   uint32_t page_addr = FW_BASE;
   uint32_t version = 0;
@@ -441,6 +438,10 @@ void load_firmware(void)
 
     uart_write(UART1, OK); // Acknowledge the frame.
   } // while(1)
+=======
+	// Metadata + rollback check
+	// Read Frames + integrity checks
+>>>>>>> 8e7e5e84420a3170252d845c667bcf22331488a1
 }
 
 
