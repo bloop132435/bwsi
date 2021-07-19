@@ -18,7 +18,7 @@ def chunk(message):
         size = 128
         if size > len(message):
             size = len(message)
-        c = struct.pack("<i", size)[:-1]
+        c = b""
         for i in range(size):
             c += chr(message[i]).encode()
         message = message[size:]
