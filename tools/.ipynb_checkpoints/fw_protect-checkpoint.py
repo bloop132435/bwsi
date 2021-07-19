@@ -47,7 +47,7 @@ def protect_firmware(infile, outfile, version, message):
         hash = hashlib.sha256(c).digest()
         l = len(c)
         kn = random.randint(0, 199)
-        k = Fkeys[kn]
+        k = keys[kn]
         a = AES.new(k, AES.MODE_CBC, iv=get_random_bytes(16))
         en = a.encrypt(pad(c, AES.block_size))
         d = b""
