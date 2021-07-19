@@ -18,7 +18,7 @@ def chunk(message):
         size = 128
         if size > len(message):
             size = len(message)
-        c = struct.pack("<i", size)[:-1]
+        c = b""
         for i in range(size):
             c += chr(message[i]).encode()
         message = message[size:]
@@ -32,17 +32,21 @@ def protect_firmware(infile, outfile, version, message):
         firmware = fp.read()
 
     # Append null-terminated message to end of firmware
-    firmware_and_message = firmware + message.encode() + b'\00'
+    firmware_and_message = firmware + message.encode()
     chunks = chunk(firmware_and_message)
     lines = open("secret_build_output.txt", "rb").readlines()
     signature = lines[0]
+    random.seed(time.time())
+    kn = random.randint(0, 199)
+    keys = lines[1:]
+    k = keys[kn]
+    aes = AES.new(k, AES.MODE_CBC)
+    auth = aes.encrypt(pad(signature, AES.block_size)) + struct.pack("<h", kn)
 
     # Pack version and size into two little-endian shorts
     metadata = struct.pack('<HHH', version, len(firmware), len(message))
 
-    keys = lines[1:]
-    random.seed(time.time())
-    data = [signature, metadata]
+    data = [auth, metadata]
     for c in chunks:
         hash = hashlib.sha256(c).digest()
         l = len(c)
