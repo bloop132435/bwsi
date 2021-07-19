@@ -38,14 +38,19 @@ def make_bootloader():
     """
     
     
-    signature = secrets.token_bytes(64) """i added this"""
+    signature = secrets.token_bytes(256) """i added this"""
     f = open("secret_output.txt","w")
-    f.write(signature)
-    f.close()
+    f.write(signature+"\n")
     h = SHA256.new()
     h.update(signature)
 
-
+    for i in range(200):
+        keys[i] = secrets.token_bytes(16)
+    for i in range(200):
+        f.write(keys[i].decode()+"\n")
+    f.close()
+    
+    
 
     # Change into directory containing bootloader.
     bootloader = FILE_DIR / '..' / 'bootloader'
