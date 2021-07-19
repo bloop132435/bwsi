@@ -18,6 +18,10 @@ OK message so we can write the next frame. The OK message in this case is
 just a zero
 """
 
+
+
+
+
 import argparse
 import struct
 import time
@@ -26,6 +30,9 @@ from serial import Serial
 
 RESP_OK = b'\x00'
 FRAME_SIZE = 16
+
+
+
 
 
 def send_metadata(ser, metadata, debug=False):
@@ -42,14 +49,14 @@ def send_metadata(ser, metadata, debug=False):
     # Send size and version to bootloader.
     if debug:
         print(metadata)
-
-    ser.write(metadata)
-
+        
     # Wait for an OK from the bootloader.
     resp = ser.read()
     if resp != RESP_OK:
         raise RuntimeError("ERROR: Bootloader responded with {}".format(repr(resp)))
-
+    
+    ser.write(b'\x00\x00\x00\x00\x00\x00') #send 6 zero bytes     
+    
 
 def send_frame(ser, frame, debug=False):
     
@@ -60,6 +67,7 @@ def send_frame(ser, frame, debug=False):
     if debug:
         print(frame)
 
+    
     resp = ser.read()  # Wait for an OK from the bootloader
 
     time.sleep(0.1)
@@ -70,14 +78,30 @@ def send_frame(ser, frame, debug=False):
     if debug:
         print("Resp: {}".format(ord(resp)))
 
-
+    ser.write(b'\x00\x00\x00\x00\x00\x00') #send 6 zero bytes 
+    
+    
+    
 def main(ser, infile, debug):
     # Open serial port. Set baudrate to 115200. Set timeout to 2 seconds.
-    with open(infile, 'rb') as fp:
-        firmware_blob = fp.read()
 
-    metadata = firmware_blob[:4]
-    firmware = firmware_blob[4:]
+#     with open(infile, 'rb') as fp:
+#         firmware_blob = fp.read()
+        
+    fp = open(infile, 'rb')
+    count = 0 
+    while True:
+        # Get next line from file
+        firmware_blob = fp.readline()
+        
+        # if line is empty
+        # end of file is reached
+        if not line:
+            break
+    
+    
+    metadata = firmware_blob[:2]
+    firmware = firmware_blob[2:]
 
     send_metadata(ser, metadata, debug=debug)
 
