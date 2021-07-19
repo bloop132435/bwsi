@@ -33,37 +33,58 @@ def make_bootloader():
     Return:
         True if successful, False otherwise.
     """
-
+    #Creating signature and hash
     signature = secrets.token_bytes(256)
     f = open("secret_output.txt", "w")
     f.write(signature.decode() + "\n")
     h = SHA256.new()
     h.update(signature)
+
+    #creating keys and writing to secret output txt
     keys = [b"" for _ in range(200)]
     for i in range(200):
         keys[i] = secrets.token_bytes(16)
-    bc = open("filename", "r")
-    bootloader = []
-    x = 0
-    for l in bc.readlines():
-        if "Write Here" in l:
-            # Add key
-            index = l.find('""')
-            final = l[:index] + keys[x] + l[index:]
-            bootloader.append(final)
-            x+=1
-        else:
-            bootloader.append(l)
     for i in range(200):
         f.write(keys[i].decode() + "\n")
     f.close()
 
+    # opening bootloader and copying the before (no keys inside/original bootloader.c) and creating the after (keys inside bootloader.c)
+    bc = open("../bootloader/src/bootloader.c", "rb")
+    after = []
+    before = []
+    x = 0
+    for l in bc.readlines():
+        before.append(l)
+        if "Write Here" in l.decode():
+            # Add key
+            index = l.find('\"\"'.encode())
+            final = l[:index] + keys[x] + l[index:]
+            after.append(final)
+            x += 1
+        else:
+            after.append(l)
+    bc.close()
+
+    # rewriting bootloader.c to the after that was created in the step above
+    bc = open("../bootloader/src/bootloader.c", "w")
+    for i in after:
+        f.write(i)
+    bc.close()
+
+    # making bootloader
     # Change into directory containing bootloader.
     bootloader = FILE_DIR / '..' / 'bootloader'
     os.chdir(bootloader)
 
     subprocess.call('make clean', shell=True)
     status = subprocess.call('make')
+
+    #opening bootloader.c and removing all the keys/reverting it
+    bc = open("design-challenge-2021-team-group-4/bootloader/src/bootloader.c",
+              "w")
+    for i in before:
+        bc.write(i)
+    bc.close()
 
     # Return True if make returned 0, otherwise return False.
     return (status == 0)
