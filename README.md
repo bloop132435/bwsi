@@ -6,7 +6,7 @@ Approved for public release. Distribution unlimited PR_21-00407-6.
 - [ ] Bootloader
 	- [ ] Firmware Updating
 		- [x] Authentication Check
-		- [ ] Metadata
+		- [x] Metadata
 		- [ ] Reading and Verifying Data
 	- [ ] Booting
 		- [ ] Print release message
