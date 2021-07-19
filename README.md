@@ -11,10 +11,10 @@ Approved for public release. Distribution unlimited PR_21-00407-6.
 	- [ ] Booting
 		- [ ] Print release message
 - [ ] FW Update
-- [ ] FW Protect
-	- [ ] Authentication Check
-	- [ ] Metadata
-	- [ ] Data frames
+- [x] FW Protect
+	- [x] Authentication Check
+	- [x] Metadata
+	- [x] Data frames
 - [ ] BL Build
 	- [ ] Generating signature and keys
 	- [ ] Adding it to bootloader
