@@ -323,6 +323,37 @@ void load_initial_firmware(void) {
  * Load the firmware into flash.
  */
 void load_firmware(void) {
+    //maybe useful variables
+    int frame_length = 0;
+    int read = 0;
+    uint32_t rcv = 0;
+  
+    uint32_t data_index = 0;
+    uint32_t page_addr = FW_BASE;
+    uint32_t version = 0;
+    uint32_t firm_size = 0;
+    uint32_t message_size = 0;
+    
+    
+    //RECEIVING METADATA STUFF
+    //receive version
+    rcv = uart_read(UART1, BLOCKING, &read);
+    version = (uint32_t)rcv;
+    rcv = uart_read(UART1, BLOCKING, &read);
+    version |= (uint32_t)rcv << 8;
+    
+    //receive firmware size
+    rcv = uart_read(UART1, BLOCKING, &read);
+    firm_size = (uint32_t)rcv;
+    rcv = uart_read(UART1, BLOCKING, &read);
+    firm_size |= (uint32_t)rcv << 8;
+    
+    //receive message size
+    rcv = uart_read(UART1, BLOCKING, &read);
+    message_size = (uint32_t)rcv;
+    rcv = uart_read(UART1, BLOCKING, &read);
+    message_size |= (uint32_t)rcv << 8;
+    
 	// Authentication check
 	int ret = 0;
 	char signature[256];
