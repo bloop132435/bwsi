@@ -31,33 +31,32 @@ from serial import Serial
 RESP_OK = b'\x00'
 FRAME_SIZE = 16
 
-
+debug = False
 
 
     
     
-def main(ser, infile):
+def main(ser, infile, debug):
     
     fp = open(infile, 'rb')
+    firmware_lines = fp.readlines()
     count = 0 
-    while True:
-        count += 1
-        # Get next line from file
-        firmware_line = fp.readline()
+    
+    
+    for line in firmware_lines:
         
-        ser.write(firmware_line)
+        ser.write(line)
         
         resp = ser.read()
-    
         # Wait for an OK from the bootloader.
         if resp != RESP_OK:
             raise RuntimeError("ERROR: Bootloader responded with {}".format(repr(resp)))
         
-        # if line is empty
-        # end of file is reached
-        if not firmware_line:
-            break
-    
+        
+        count += 1
+        
+        print("Line{}: {}".format(count, line.strip()))
+
     
     print("Done writing firmware.")
     ser.write(struct.pack('>H', 0x0000))  #send zero bytes 
@@ -80,5 +79,4 @@ if __name__ == '__main__':
     print('Opening serial port...')
     ser = Serial(args.port, baudrate=115200, timeout=2)
     main(ser=ser, infile=args.firmware, debug=args.debug)
-
 
