@@ -18,10 +18,13 @@ OK message so we can write the next frame. The OK message in this case is
 just a zero
 """
 
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> bfa21e2129d8052dfa7a045ae4fd77455e77775f
 import argparse
 import struct
 import time
@@ -32,9 +35,12 @@ RESP_OK = b'\x00'
 FRAME_SIZE = 16
 
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> bfa21e2129d8052dfa7a045ae4fd77455e77775f
 def send_metadata(ser, metadata, debug=False):
     version, size = struct.unpack_from('<HH', metadata)
     print(f'Version: {version}\nSize: {size} bytes\n')
@@ -49,22 +55,40 @@ def send_metadata(ser, metadata, debug=False):
     # Send size and version to bootloader.
     if debug:
         print(metadata)
+<<<<<<< HEAD
         
+=======
+
+    ser.write(metadata)
+
+>>>>>>> bfa21e2129d8052dfa7a045ae4fd77455e77775f
     # Wait for an OK from the bootloader.
     resp = ser.read()
     if resp != RESP_OK:
         raise RuntimeError("ERROR: Bootloader responded with {}".format(repr(resp)))
+<<<<<<< HEAD
     
     ser.write(b'\x00\x00\x00\x00\x00\x00') #send 6 zero bytes     
     
 
 def send_frame(ser, frame, debug=False):
+=======
+
+
+def send_frame(ser, frame, debug=False):
+    
+    
+    
+>>>>>>> bfa21e2129d8052dfa7a045ae4fd77455e77775f
     ser.write(frame)  # Write the frame...
 
     if debug:
         print(frame)
 
+<<<<<<< HEAD
     
+=======
+>>>>>>> bfa21e2129d8052dfa7a045ae4fd77455e77775f
     resp = ser.read()  # Wait for an OK from the bootloader
 
     time.sleep(0.1)
@@ -75,6 +99,7 @@ def send_frame(ser, frame, debug=False):
     if debug:
         print("Resp: {}".format(ord(resp)))
 
+<<<<<<< HEAD
     ser.write(b'\x00\x00\x00\x00\x00\x00') #send 6 zero bytes 
     
     
@@ -99,6 +124,16 @@ def main(ser, infile, debug):
     
     metadata = firmware_blob[:2]
     firmware = firmware_blob[2:]
+=======
+
+def main(ser, infile, debug):
+    # Open serial port. Set baudrate to 115200. Set timeout to 2 seconds.
+    with open(infile, 'rb') as fp:
+        firmware_blob = fp.read()
+
+    metadata = firmware_blob[:4]
+    firmware = firmware_blob[4:]
+>>>>>>> bfa21e2129d8052dfa7a045ae4fd77455e77775f
 
     send_metadata(ser, metadata, debug=debug)
 

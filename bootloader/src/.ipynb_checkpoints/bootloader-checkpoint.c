@@ -20,6 +20,215 @@ void boot_firmware(void);
 long program_flash(uint32_t, unsigned char*, unsigned int);
 
 
+<<<<<<< HEAD
+=======
+// TODO: Write this in bl buide
+char keys[200][17] = {
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ "",
+	/* Write Here */ ""
+};
+
+
+
+>>>>>>> bfa21e2129d8052dfa7a045ae4fd77455e77775f
 // Firmware Constants
 #define METADATA_BASE 0xFC00  // base address of version and firmware size in Flash
 #define FW_BASE 0x10000  // base address of firmware in Flash
@@ -47,6 +256,10 @@ uint16_t *fw_version_address = (uint16_t *) METADATA_BASE;
 uint16_t *fw_size_address = (uint16_t *) (METADATA_BASE + 2);
 uint8_t *fw_release_message_address;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> bfa21e2129d8052dfa7a045ae4fd77455e77775f
 // Firmware Buffer
 unsigned char data[FLASH_PAGESIZE];
 
@@ -103,12 +316,20 @@ void load_initial_firmware(void) {
 
   int size = (int)&_binary_firmware_bin_size;
   int *data = (int *)&_binary_firmware_bin_start;
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bfa21e2129d8052dfa7a045ae4fd77455e77775f
   uint16_t version = 2;
   uint32_t metadata = (((uint16_t) size & 0xFFFF) << 16) | (version & 0xFFFF);
   program_flash(METADATA_BASE, (uint8_t*)(&metadata), 4);
   fw_release_message_address = (uint8_t *) "This is the initial release message.";
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> bfa21e2129d8052dfa7a045ae4fd77455e77775f
   int i = 0;
   for (; i < size / FLASH_PAGESIZE; i++){
        program_flash(FW_BASE + (i * FLASH_PAGESIZE), ((unsigned char *) data) + (i * FLASH_PAGESIZE), FLASH_PAGESIZE);
@@ -122,6 +343,7 @@ void load_initial_firmware(void) {
  */
 void load_firmware(void)
 {
+<<<<<<< HEAD
   int frame_length = 0;
   int read = 0;
   uint32_t rcv = 0;
@@ -222,6 +444,8 @@ void load_firmware(void)
 
     uart_write(UART1, OK); // Acknowledge the frame.
   } // while(1)
+=======
+>>>>>>> bfa21e2129d8052dfa7a045ae4fd77455e77775f
 }
 
 
@@ -269,4 +493,8 @@ void boot_firmware(void)
     "LDR R0,=0x10001\n\t"
     "BX R0\n\t"
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> bfa21e2129d8052dfa7a045ae4fd77455e77775f
