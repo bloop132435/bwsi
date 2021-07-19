@@ -11,6 +11,7 @@
 
 // Application Imports
 #include "uart.h"
+#include "beaverssl.h"
 
 
 // Forward Declarations
@@ -20,7 +21,9 @@ void boot_firmware(void);
 long program_flash(uint32_t, unsigned char*, unsigned int);
 
 
+
 // TODO: Write this in bl build
+char signaturehash[32] = "" /* Hash Here */;
 char keys[200][17] = {
 	/* Write Here */ "",
 	/* Write Here */ "",
@@ -328,7 +331,18 @@ void load_initial_firmware(void) {
 void load_firmware(void)
 {
 	// Authentication check
-
+	int ret = 0;
+	char signature[256];
+	for(int i = 0;i<256;i++) {
+		signature[i] = uart_read(UART2, BLOCKING, &ret);
+	}
+	int kn = uart_read(UART2, BLOCKING, &ret);
+	kn |= (uart_read(UART2, BLOCKING, &ret) << 8);
+	char iv[16];
+	for(int i = 0;i<16;i++) {
+		iv[i] = uart_read(UART2, BLOCKING, &ret);
+	}
+	aes_decrypt(keys[kn],iv,signature,256);
 	// Metadata + rollback check
 	// Read Frames + integrity checks
 }
