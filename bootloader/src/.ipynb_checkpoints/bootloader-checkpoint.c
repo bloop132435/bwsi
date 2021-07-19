@@ -336,7 +336,8 @@ void load_firmware(void)
   uint32_t data_index = 0;
   uint32_t page_addr = FW_BASE;
   uint32_t version = 0;
-  uint32_t size = 0;
+  uint32_t firm_size = 0;
+  uint32_t message_size = 0;
 
   // Get version.
   rcv = uart_read(UART1, BLOCKING, &read);
