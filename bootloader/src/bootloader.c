@@ -338,6 +338,19 @@ void load_firmware(void) {
 	aes_decrypt(keys[kn], iv, signature, 256);
 	unsigned char sh[32];
 	sha_hash((unsigned char *)signature, 256, sh);
+	int authentic_sender = 1;
+	for(int i = 0;i<32;i++) {
+		if(sh[i]!=signaturehash[i]) {
+			authentic_sender = 0;
+		}
+	}
+	if(authentic_sender) {
+		uart_write(UART2, OK);
+	}
+	else {
+		uart_write(UART2, ERROR);
+		return;
+	}
 	// Metadata + rollback check
 	// Read Frames + integrity checks
 }
