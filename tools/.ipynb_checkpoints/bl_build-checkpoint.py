@@ -60,10 +60,10 @@ def make_bootloader():
             # Add key
             index = l.find('""')
             final = l[:index] + keys[x] + l[index:]
-            bootloader.append(final)
+            after.append(final)
             x+=1
         else:
-            bootloader.append(l)
+            after.append(l)
     bc.close()
     
     # rewriting bootloader.c to the after that was created in the step above
