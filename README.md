@@ -19,6 +19,6 @@ Approved for public release. Distribution unlimited PR_21-00407-6.
 	- [x] Generating signature and keys
 	- [x] Adding it to bootloader
 	- [x] Making bootloader
-	- [ ] Erasing keys from bootloader
+	- [x] Erasing keys from bootloader
 
 
