@@ -32,7 +32,7 @@ def protect_firmware(infile, outfile, version, message):
         firmware = fp.read()
 
     # Append null-terminated message to end of firmware
-    firmware_and_message = firmware + message.encode() + b'\00'
+    firmware_and_message = firmware + message.encode()
     chunks = chunk(firmware_and_message)
     lines = open("secret_build_output.txt", "rb").readlines()
     signature = lines[0]
