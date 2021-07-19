@@ -323,66 +323,74 @@ void load_initial_firmware(void) {
  * Load the firmware into flash.
  */
 void load_firmware(void) {
-    //maybe useful variables
-    int frame_length = 0;
-    int read = 0;
-    uint32_t rcv = 0;
-  
-    uint32_t data_index = 0;
-    uint32_t page_addr = FW_BASE;
-    uint32_t version = 0;
-    uint32_t firm_size = 0;
-    uint32_t message_size = 0;
-    
-    
-    //RECEIVING METADATA STUFF
-    //receive version
-    rcv = uart_read(UART1, BLOCKING, &read);
-    version = (uint32_t)rcv;
-    rcv = uart_read(UART1, BLOCKING, &read);
-    version |= (uint32_t)rcv << 8;
-    
-    //receive firmware size
-    rcv = uart_read(UART1, BLOCKING, &read);
-    firm_size = (uint32_t)rcv;
-    rcv = uart_read(UART1, BLOCKING, &read);
-    firm_size |= (uint32_t)rcv << 8;
-    
-    //receive message size
-    rcv = uart_read(UART1, BLOCKING, &read);
-    message_size = (uint32_t)rcv;
-    rcv = uart_read(UART1, BLOCKING, &read);
-    message_size |= (uint32_t)rcv << 8;
-    
+	// maybe useful variables
+	int frame_length = 0;
+	int read = 0;
+	uint32_t rcv = 0;
+
+	uint32_t data_index = 0;
+	uint32_t page_addr = FW_BASE;
+	uint32_t version = 0;
+	uint32_t firm_size = 0;
+	uint32_t message_size = 0;
+
+
 	// Authentication check
 	int ret = 0;
 	char signature[256];
 	for(int i = 0; i < 256; i++) {
-		signature[i] = uart_read(UART2, BLOCKING, &ret);
+		signature[i] = uart_read(UART1, BLOCKING, &ret);
 	}
-	int kn = uart_read(UART2, BLOCKING, &ret);
-	kn |= (uart_read(UART2, BLOCKING, &ret) << 8);
+	int kn = uart_read(UART1, BLOCKING, &ret);
+	kn |= (uart_read(UART1, BLOCKING, &ret) << 8);
 	char iv[16];
 	for(int i = 0; i < 16; i++) {
-		iv[i] = uart_read(UART2, BLOCKING, &ret);
+		iv[i] = uart_read(UART1, BLOCKING, &ret);
 	}
 	aes_decrypt(keys[kn], iv, signature, 256);
 	unsigned char sh[32];
 	sha_hash((unsigned char *)signature, 256, sh);
 	int authentic_sender = 1;
-	for(int i = 0;i<32;i++) {
-		if(sh[i]!=signaturehash[i]) {
+	for(int i = 0; i < 32; i++) {
+		if(sh[i] != signaturehash[i]) {
 			authentic_sender = 0;
 		}
 	}
 	if(authentic_sender) {
-		uart_write(UART2, OK);
-	}
-	else {
-		uart_write(UART2, ERROR);
+		uart_write(UART1, OK);
+	} else {
+		uart_write(UART1, ERROR);
 		return;
 	}
-	// Metadata + rollback check
+	// RECEIVING METADATA STUFF
+	// receive version
+	rcv = uart_read(UART1, BLOCKING, &read);
+	version = (uint32_t)rcv;
+	rcv = uart_read(UART1, BLOCKING, &read);
+	version |= (uint32_t)rcv << 8;
+
+	// receive firmware size
+	rcv = uart_read(UART1, BLOCKING, &read);
+	firm_size = (uint32_t)rcv;
+	rcv = uart_read(UART1, BLOCKING, &read);
+	firm_size |= (uint32_t)rcv << 8;
+
+	// receive message size
+	rcv = uart_read(UART1, BLOCKING, &read);
+	message_size = (uint32_t)rcv;
+	rcv = uart_read(UART1, BLOCKING, &read);
+	message_size |= (uint32_t)rcv << 8;
+	uint16_t old_version = *fw_version_address;
+	if(version != 0 && version < old_version) {
+		uart_write(UART1, ERROR); // Reject the metadata.
+		SysCtlReset();			  // Reset device
+		return;
+	} else if(version == 0) {
+		// If debug firmware, don't change version
+		uart_write_str(UART2, "Debugging Version\n");
+		version = old_version;
+	}
+	uart_write(UART1, OK);
 	// Read Frames + integrity checks
 }
 
