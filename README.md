@@ -18,7 +18,7 @@ Approved for public release. Distribution unlimited PR_21-00407-6.
 - [ ] BL Build
 	- [x] Generating signature and keys
 	- [x] Adding it to bootloader
-	- [ ] Making bootloader
+	- [x] Making bootloader
 	- [ ] Erasing keys from bootloader
 
 
