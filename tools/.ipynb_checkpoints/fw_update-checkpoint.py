@@ -34,47 +34,23 @@ FRAME_SIZE = 16
 
 
 
-
-def send_metadata(ser, metadata, debug=False):
-
-    
-    version, size = struct.unpack_from('<HH', metadata)
-    print(f'Version: {version}\nSize: {size} bytes\n')
-
-    
-    resp = ser.read()
-    
-    # Wait for an OK from the bootloader.
-    if resp != RESP_OK:
-        raise RuntimeError("ERROR: Bootloader responded with {}".format(repr(resp)))
-    
-    ser.write(struct.pack('>H', 0x0000))  #send zero bytes 
-
     
     
-
-def send_frame(ser, frame, debug=False):
-    
-    ser.write(frame)  # Write the frame...
-    
-    
-    resp = ser.read()  
-    
-    # Wait for an OK from the bootloader.
-    if resp != RESP_OK:
-        raise RuntimeError("ERROR: Bootloader responded with {}".format(repr(resp)))
-
-    ser.write(struct.pack('>H', 0x0000))  #send zero bytes 
-    
-    
-    
-def main(ser, infile, debug):
+def main(ser, infile):
     
     fp = open(infile, 'rb')
     count = 0 
     while True:
         # Get next line from file
-        firmware_blob = fp.readline()
+        firmware_line = fp.readline()
+        
+        ser.write(firmware_line)
+        
+        resp = ser.read()
+    
+        # Wait for an OK from the bootloader.
+        if resp != RESP_OK:
+            raise RuntimeError("ERROR: Bootloader responded with {}".format(repr(resp)))
         
         # if line is empty
         # end of file is reached
@@ -83,11 +59,9 @@ def main(ser, infile, debug):
     
     
     print("Done writing firmware.")
+    ser.write(struct.pack('>H', 0x0000))  #send zero bytes 
 
     
-    # Send a zero length payload to tell the bootlader to finish writing it's page.
-    ser.write(struct.pack('>H', 0x0000))
-
     return ser
 
 
