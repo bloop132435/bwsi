@@ -41,6 +41,7 @@ def main(ser, infile):
     fp = open(infile, 'rb')
     count = 0 
     while True:
+        count += 1
         # Get next line from file
         firmware_line = fp.readline()
         
