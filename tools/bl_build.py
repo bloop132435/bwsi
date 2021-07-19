@@ -44,6 +44,7 @@ def make_bootloader():
         keys[i] = secrets.token_bytes(16)
     bc = open("filename", "r")
     bootloader = []
+<<<<<<< HEAD
     x = 0
     for l in bc.readlines():
         if "Write Here" in l:
@@ -52,6 +53,12 @@ def make_bootloader():
             final = l[:index] + keys[x] + l[index:]
             bootloader.append(final)
             x+=1
+=======
+    for l in bc.readlines():
+        if "Write Here" in l:
+            # Add key
+            pass
+>>>>>>> 3d39a406ecb50e6c955e109c0069b10ba97dbe95
         else:
             bootloader.append(l)
     for i in range(200):
