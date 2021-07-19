@@ -33,20 +33,6 @@ FRAME_SIZE = 16
 
 
 
-#es
-6 bytes of zeros 
-54 bytes of zeros
-
-ser.write()
-
-# 2 little endian shorts
-# , iv
-# 3 different #s version, length fw, length msg
-
-
-
-
-
 
 
 def send_metadata(ser, metadata, debug=False):
@@ -63,9 +49,7 @@ def send_metadata(ser, metadata, debug=False):
     # Send size and version to bootloader.
     if debug:
         print(metadata)
-    
-#change 
-    
+        
     # Wait for an OK from the bootloader.
     resp = ser.read()
     if resp != RESP_OK:
@@ -97,6 +81,7 @@ def send_frame(ser, frame, debug=False):
     
 def main(ser, infile, debug):
     # Open serial port. Set baudrate to 115200. Set timeout to 2 seconds.
+
 #     with open(infile, 'rb') as fp:
 #         firmware_blob = fp.read()
         
