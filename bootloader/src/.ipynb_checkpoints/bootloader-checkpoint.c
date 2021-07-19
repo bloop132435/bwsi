@@ -20,13 +20,8 @@ void boot_firmware(void);
 long program_flash(uint32_t, unsigned char*, unsigned int);
 
 
-<<<<<<< HEAD
 // TODO: Write this in bl build
 char arr[17][200] = {
-=======
-// TODO: Write this in bl buide
-char keys[200][17] = {
->>>>>>> 3d39a406ecb50e6c955e109c0069b10ba97dbe95
 	/* Write Here */ "",
 	/* Write Here */ "",
 	/* Write Here */ "",
