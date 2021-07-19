@@ -18,7 +18,7 @@
 void load_initial_firmware(void);
 void load_firmware(void);
 void boot_firmware(void);
-long program_flash(uint32_t, unsigned char*, unsigned int);
+long program_flash(uint32_t, unsigned char*, unsigned int);S
 
 
 
@@ -257,6 +257,8 @@ uint16_t *fw_size_address = (uint16_t *) (METADATA_BASE + 2);
 uint8_t *fw_release_message_address;
 
 
+// Firmware Buffer
+unsigned char data[FLASH_PAGESIZE];
 
 
 int main(void) {

@@ -36,58 +36,40 @@ FRAME_SIZE = 16
 
 
 def send_metadata(ser, metadata, debug=False):
+
+    
     version, size = struct.unpack_from('<HH', metadata)
     print(f'Version: {version}\nSize: {size} bytes\n')
 
-    # Handshake for update
-    ser.write(b'U')
     
-    print('Waiting for bootloader to enter update mode...')
-    while ser.read(1).decode() != 'U':
-        pass
-
-    # Send size and version to bootloader.
-    if debug:
-        print(metadata)
-        
-    # Wait for an OK from the bootloader.
     resp = ser.read()
+    
+    # Wait for an OK from the bootloader.
     if resp != RESP_OK:
         raise RuntimeError("ERROR: Bootloader responded with {}".format(repr(resp)))
     
-    ser.write(b'\x00\x00\x00\x00\x00\x00') #send 6 zero bytes     
+    ser.write(struct.pack('>H', 0x0000))  #send zero bytes 
+
+    
     
 
 def send_frame(ser, frame, debug=False):
     
-    
-    
     ser.write(frame)  # Write the frame...
-
-    if debug:
-        print(frame)
-
     
-    resp = ser.read()  # Wait for an OK from the bootloader
-
-    time.sleep(0.1)
-
+    
+    resp = ser.read()  
+    
+    # Wait for an OK from the bootloader.
     if resp != RESP_OK:
         raise RuntimeError("ERROR: Bootloader responded with {}".format(repr(resp)))
 
-    if debug:
-        print("Resp: {}".format(ord(resp)))
-
-    ser.write(b'\x00\x00\x00\x00\x00\x00') #send 6 zero bytes 
+    ser.write(struct.pack('>H', 0x0000))  #send zero bytes 
     
     
     
 def main(ser, infile, debug):
-    # Open serial port. Set baudrate to 115200. Set timeout to 2 seconds.
-
-#     with open(infile, 'rb') as fp:
-#         firmware_blob = fp.read()
-        
+    
     fp = open(infile, 'rb')
     count = 0 
     while True:
@@ -100,28 +82,9 @@ def main(ser, infile, debug):
             break
     
     
-    metadata = firmware_blob[:2]
-    firmware = firmware_blob[2:]
-
-    send_metadata(ser, metadata, debug=debug)
-
-    for idx, frame_start in enumerate(range(0, len(firmware), FRAME_SIZE)):
-        data = firmware[frame_start: frame_start + FRAME_SIZE]
-
-        # Get length of data.
-        length = len(data)
-        frame_fmt = '>H{}s'.format(length)
-
-        # Construct frame.
-        frame = struct.pack(frame_fmt, length, data)
-
-        if debug:
-            print("Writing frame {} ({} bytes)...".format(idx, len(frame)))
-
-        send_frame(ser, frame, debug=debug)
-
     print("Done writing firmware.")
 
+    
     # Send a zero length payload to tell the bootlader to finish writing it's page.
     ser.write(struct.pack('>H', 0x0000))
 
