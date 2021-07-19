@@ -54,7 +54,7 @@ def main(ser, infile):
         
         # if line is empty
         # end of file is reached
-        if not line:
+        if not firmware_line:
             break
     
     
