@@ -15,7 +15,6 @@ gcc/bootloader.o: src/bootloader.c \
  /usr/include/newlib/machine/_default_types.h \
  /usr/include/newlib/sys/_stdint.h \
  /usr/lib/gcc/arm-none-eabi/6.3.1/include/stddef.h \
- /home/jovyan/lib/stellaris/bearssl/beaverssl.h \
  /home/jovyan/lib/BearSSL/inc/bearssl.h \
  /home/jovyan/lib/BearSSL/inc/bearssl_hash.h /usr/include/newlib/string.h \
  /usr/include/newlib/_ansi.h /usr/include/newlib/sys/reent.h \
