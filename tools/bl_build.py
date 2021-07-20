@@ -26,6 +26,11 @@ def copy_initial_firmware(binary_path):
     bootloader = FILE_DIR / '..' / 'bootloader'
     shutil.copy(binary_path, bootloader / 'src' / 'firmware.bin')
 
+def keydecode(k):
+    s = []
+    for i in k:
+        s.append(str(i))
+    return ', '.join(s)
 
 def make_bootloader():
     """
@@ -35,8 +40,8 @@ def make_bootloader():
     """
     #Creating signature and hash
     signature = secrets.token_bytes(256)
-    f = open("secret_output.txt", "w")
-    f.write(signature.decode() + "\n")
+    f = open("secret_output.txt", "wb")
+    f.write(signature + "\n".encode())
     h = SHA256.new()
     h.update(signature)
 
@@ -45,22 +50,29 @@ def make_bootloader():
     for i in range(200):
         keys[i] = secrets.token_bytes(16)
     for i in range(200):
-        f.write(keys[i].decode() + "\n")
+        f.write(keys[i]  + '\n'.encode())
     f.close()
 
     # opening bootloader and copying the before (no keys inside/original bootloader.c) and creating the after (keys inside bootloader.c)
-    bc = open("../bootloader/src/bootloader.c", "rb")
+    bc = open("../bootloader/src/bootloader.c", "r")
     after = []
     before = []
     x = 0
     for l in bc.readlines():
         before.append(l)
-        if "Write Here" in l.decode():
+        if "Write Here" in l:
             # Add key
-            index = l.find('\"\"'.encode())
-            final = l[:index] + keys[x] + l[index:]
+            index = l.find('{}')
+            index += 1
+            final = l[:index] + keydecode(keys[x]) + l[index:]
             after.append(final)
             x += 1
+        elif "Hash Here" in l:
+            index = l.find('{}')
+            index += 1
+            final = l[:index] + keydecode(h.digest()) + l[index:]
+            after.append(final)
+            pass
         else:
             after.append(l)
     bc.close()
@@ -68,7 +80,7 @@ def make_bootloader():
     # rewriting bootloader.c to the after that was created in the step above
     bc = open("../bootloader/src/bootloader.c", "w")
     for i in after:
-        f.write(i)
+        bc.write(i)
     bc.close()
 
     # making bootloader
@@ -80,10 +92,10 @@ def make_bootloader():
     status = subprocess.call('make')
 
     #opening bootloader.c and removing all the keys/reverting it
-    bc = open("../bootloader/src/bootloader.c", "w")
-    for i in before:
-        bc.write(i)
-    bc.close()
+#     bc = open("../bootloader/src/bootloader.c", "w")
+#     for i in before:
+#         bc.write(i)
+#     bc.close()
 
     # Return True if make returned 0, otherwise return False.
     return (status == 0)

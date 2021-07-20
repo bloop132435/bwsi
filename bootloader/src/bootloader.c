@@ -5,13 +5,13 @@
 #include "inc/hw_ints.h"   // Interrupt numbers
 
 // Driver API Imports
-#include "driverlib/flash.h"	 // FLASH API
-#include "driverlib/sysctl.h"	 // System control API (clock/reset)
+#include "driverlib/flash.h"    // FLASH API
+#include "driverlib/sysctl.h"   // System control API (clock/reset)
 #include "driverlib/interrupt.h" // Interrupt API
 
 // Application Imports
 #include "uart.h"
-#include "beaverssl.h"
+#include "bearssl/beaverssl.h"
 
 
 // Forward Declarations
@@ -22,213 +22,213 @@ long program_flash(uint32_t, unsigned char *, unsigned int);
 
 
 // TODO: Write this in bl build
-char signaturehash[32] = "" /* Hash Here */;
-char keys[200][17] = {
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ "",
-  /* Write Here */ ""};
+unsigned char signaturehash[32] = {189, 23, 31, 192, 255, 79, 248, 129, 17, 62, 201, 98, 0, 161, 171, 253, 27, 192, 151, 226, 247, 92, 123, 189, 141, 120, 10, 185, 147, 20, 87, 221} /* Hash Here */;
+unsigned char keys[200][17] = {
+  /* Write Here */ {92, 4, 120, 139, 228, 78, 220, 69, 185, 105, 5, 101, 104, 69, 71, 75},
+  /* Write Here */ {172, 19, 232, 32, 252, 116, 126, 179, 152, 107, 200, 68, 199, 212, 27, 20},
+  /* Write Here */ {31, 116, 11, 46, 28, 198, 125, 135, 215, 126, 226, 19, 101, 115, 13, 157},
+  /* Write Here */ {154, 30, 228, 19, 42, 189, 9, 103, 40, 172, 8, 144, 3, 217, 68, 135},
+  /* Write Here */ {17, 48, 135, 50, 11, 134, 68, 146, 41, 136, 24, 64, 60, 28, 25, 132},
+  /* Write Here */ {232, 83, 157, 210, 151, 46, 219, 99, 98, 229, 217, 250, 191, 240, 117, 34},
+  /* Write Here */ {224, 253, 87, 190, 171, 118, 212, 164, 132, 17, 140, 8, 144, 128, 183, 2},
+  /* Write Here */ {92, 28, 150, 19, 218, 65, 211, 37, 135, 73, 203, 16, 167, 155, 167, 146},
+  /* Write Here */ {138, 110, 60, 52, 36, 134, 40, 2, 89, 180, 197, 99, 123, 78, 131, 19},
+  /* Write Here */ {121, 173, 183, 243, 235, 134, 82, 65, 184, 148, 210, 162, 121, 54, 184, 49},
+  /* Write Here */ {110, 230, 9, 113, 67, 44, 139, 236, 70, 40, 141, 2, 147, 51, 142, 225},
+  /* Write Here */ {142, 9, 100, 248, 150, 22, 134, 219, 189, 21, 153, 11, 81, 7, 76, 219},
+  /* Write Here */ {124, 183, 219, 95, 222, 218, 82, 147, 244, 62, 203, 226, 203, 71, 119, 205},
+  /* Write Here */ {180, 221, 163, 188, 222, 7, 65, 74, 139, 142, 55, 51, 175, 186, 17, 55},
+  /* Write Here */ {64, 127, 35, 21, 212, 215, 52, 80, 89, 36, 68, 105, 215, 155, 11, 115},
+  /* Write Here */ {129, 181, 38, 240, 111, 95, 93, 145, 175, 14, 74, 227, 14, 47, 203, 208},
+  /* Write Here */ {242, 33, 225, 246, 95, 227, 21, 113, 49, 216, 78, 147, 186, 222, 165, 140},
+  /* Write Here */ {106, 248, 185, 122, 69, 55, 112, 28, 52, 120, 81, 81, 111, 23, 119, 38},
+  /* Write Here */ {245, 255, 181, 132, 88, 241, 40, 105, 11, 160, 28, 161, 55, 178, 65, 89},
+  /* Write Here */ {6, 242, 101, 198, 199, 92, 94, 25, 31, 226, 10, 224, 78, 197, 48, 234},
+  /* Write Here */ {136, 43, 240, 58, 22, 74, 213, 114, 71, 160, 244, 130, 218, 196, 78, 84},
+  /* Write Here */ {113, 50, 250, 64, 254, 85, 79, 226, 229, 130, 55, 113, 180, 250, 138, 87},
+  /* Write Here */ {237, 178, 195, 242, 67, 76, 242, 40, 47, 214, 53, 61, 161, 179, 80, 162},
+  /* Write Here */ {0, 196, 62, 114, 233, 163, 186, 70, 167, 145, 110, 92, 73, 213, 187, 45},
+  /* Write Here */ {122, 14, 117, 236, 90, 186, 148, 133, 226, 191, 52, 219, 145, 176, 69, 55},
+  /* Write Here */ {106, 74, 23, 155, 190, 230, 219, 131, 134, 241, 66, 83, 244, 168, 225, 4},
+  /* Write Here */ {90, 239, 231, 78, 33, 32, 46, 253, 47, 138, 178, 99, 220, 125, 100, 164},
+  /* Write Here */ {207, 34, 24, 125, 127, 23, 86, 130, 104, 122, 84, 177, 255, 57, 61, 170},
+  /* Write Here */ {33, 191, 235, 121, 4, 237, 202, 52, 130, 90, 121, 105, 209, 238, 119, 13},
+  /* Write Here */ {45, 249, 124, 184, 5, 163, 71, 157, 238, 113, 254, 234, 12, 81, 161, 91},
+  /* Write Here */ {6, 67, 191, 247, 209, 80, 212, 34, 68, 92, 103, 3, 250, 153, 216, 129},
+  /* Write Here */ {6, 41, 42, 222, 132, 46, 124, 63, 103, 233, 218, 217, 101, 146, 110, 196},
+  /* Write Here */ {90, 187, 75, 234, 127, 230, 214, 93, 159, 232, 128, 157, 199, 198, 123, 193},
+  /* Write Here */ {121, 101, 219, 12, 138, 156, 240, 33, 206, 158, 119, 70, 101, 241, 97, 40},
+  /* Write Here */ {81, 91, 189, 221, 187, 191, 17, 54, 41, 0, 192, 52, 144, 85, 34, 193},
+  /* Write Here */ {241, 101, 157, 39, 229, 106, 237, 56, 74, 107, 136, 109, 17, 3, 112, 22},
+  /* Write Here */ {198, 209, 249, 193, 50, 190, 81, 249, 173, 252, 67, 232, 152, 132, 109, 157},
+  /* Write Here */ {219, 206, 114, 48, 205, 2, 50, 11, 234, 198, 102, 229, 27, 120, 189, 86},
+  /* Write Here */ {158, 27, 38, 7, 118, 121, 182, 42, 146, 221, 98, 52, 112, 105, 28, 95},
+  /* Write Here */ {192, 184, 22, 23, 245, 180, 37, 215, 83, 90, 73, 55, 191, 213, 73, 103},
+  /* Write Here */ {17, 136, 94, 66, 86, 33, 142, 229, 85, 207, 173, 153, 45, 34, 164, 109},
+  /* Write Here */ {22, 62, 48, 55, 83, 249, 5, 33, 158, 75, 93, 90, 90, 157, 126, 222},
+  /* Write Here */ {162, 102, 158, 221, 26, 160, 24, 75, 9, 182, 22, 95, 96, 36, 75, 133},
+  /* Write Here */ {123, 61, 230, 73, 152, 143, 246, 66, 157, 227, 125, 190, 130, 28, 123, 110},
+  /* Write Here */ {67, 212, 59, 178, 135, 188, 188, 145, 192, 3, 209, 170, 173, 142, 122, 43},
+  /* Write Here */ {222, 135, 138, 178, 159, 87, 195, 133, 11, 141, 74, 106, 245, 96, 110, 56},
+  /* Write Here */ {195, 162, 123, 9, 123, 202, 228, 245, 114, 193, 58, 35, 92, 40, 31, 69},
+  /* Write Here */ {38, 125, 243, 150, 94, 87, 0, 171, 223, 186, 49, 194, 81, 181, 198, 227},
+  /* Write Here */ {45, 184, 247, 145, 133, 133, 83, 9, 227, 75, 68, 224, 192, 4, 26, 166},
+  /* Write Here */ {124, 35, 15, 224, 100, 86, 113, 97, 117, 148, 241, 36, 28, 248, 28, 74},
+  /* Write Here */ {59, 53, 233, 138, 113, 25, 185, 240, 65, 87, 73, 20, 110, 44, 118, 204},
+  /* Write Here */ {67, 223, 116, 14, 251, 225, 38, 60, 90, 129, 148, 248, 135, 40, 232, 177},
+  /* Write Here */ {0, 201, 63, 8, 155, 240, 109, 139, 232, 7, 102, 21, 46, 221, 209, 12},
+  /* Write Here */ {236, 73, 69, 57, 105, 212, 171, 244, 83, 51, 153, 72, 98, 45, 36, 67},
+  /* Write Here */ {20, 114, 120, 115, 235, 204, 43, 148, 96, 59, 14, 6, 179, 156, 113, 197},
+  /* Write Here */ {93, 180, 226, 7, 196, 190, 143, 33, 77, 182, 207, 83, 33, 177, 218, 236},
+  /* Write Here */ {192, 85, 20, 254, 6, 246, 166, 135, 92, 215, 43, 238, 24, 247, 251, 2},
+  /* Write Here */ {241, 99, 107, 8, 46, 45, 204, 39, 123, 101, 88, 115, 192, 99, 178, 62},
+  /* Write Here */ {174, 142, 134, 252, 49, 8, 95, 153, 11, 218, 162, 251, 58, 53, 215, 5},
+  /* Write Here */ {214, 176, 37, 211, 103, 128, 242, 44, 51, 240, 225, 25, 68, 66, 245, 118},
+  /* Write Here */ {242, 215, 76, 44, 1, 103, 146, 153, 56, 40, 243, 176, 26, 38, 247, 71},
+  /* Write Here */ {85, 193, 3, 239, 237, 179, 167, 12, 179, 223, 249, 215, 253, 203, 194, 77},
+  /* Write Here */ {136, 244, 49, 114, 93, 136, 116, 136, 39, 181, 117, 83, 70, 194, 107, 110},
+  /* Write Here */ {76, 25, 141, 146, 155, 44, 67, 169, 96, 28, 24, 112, 242, 86, 242, 78},
+  /* Write Here */ {109, 240, 255, 245, 164, 168, 15, 244, 226, 15, 29, 238, 96, 150, 90, 73},
+  /* Write Here */ {14, 10, 161, 163, 232, 149, 224, 190, 151, 155, 208, 57, 78, 239, 22, 211},
+  /* Write Here */ {246, 215, 17, 71, 162, 30, 172, 251, 88, 32, 243, 118, 121, 139, 132, 47},
+  /* Write Here */ {176, 201, 36, 243, 216, 129, 80, 5, 24, 200, 115, 101, 151, 243, 79, 36},
+  /* Write Here */ {73, 133, 205, 75, 42, 124, 192, 167, 50, 173, 8, 72, 105, 225, 168, 6},
+  /* Write Here */ {100, 245, 167, 2, 192, 102, 247, 177, 101, 237, 166, 253, 110, 171, 235, 107},
+  /* Write Here */ {211, 45, 194, 121, 22, 240, 21, 246, 192, 133, 43, 245, 96, 159, 177, 243},
+  /* Write Here */ {84, 18, 55, 150, 175, 115, 202, 251, 142, 161, 90, 193, 137, 200, 21, 213},
+  /* Write Here */ {28, 77, 113, 139, 74, 117, 224, 111, 169, 157, 153, 164, 26, 138, 214, 245},
+  /* Write Here */ {105, 211, 90, 239, 155, 246, 234, 23, 24, 125, 92, 163, 243, 222, 15, 147},
+  /* Write Here */ {242, 111, 34, 169, 21, 128, 25, 216, 185, 112, 161, 127, 104, 132, 86, 226},
+  /* Write Here */ {67, 83, 252, 192, 164, 2, 227, 114, 16, 201, 11, 193, 200, 100, 245, 50},
+  /* Write Here */ {79, 241, 164, 198, 221, 8, 33, 75, 184, 223, 96, 50, 185, 174, 191, 152},
+  /* Write Here */ {24, 250, 231, 247, 91, 31, 10, 141, 73, 227, 166, 105, 31, 141, 182, 142},
+  /* Write Here */ {188, 21, 98, 128, 82, 213, 130, 99, 91, 191, 234, 111, 76, 15, 109, 247},
+  /* Write Here */ {219, 104, 166, 70, 199, 94, 81, 106, 136, 20, 198, 190, 248, 224, 5, 209},
+  /* Write Here */ {31, 115, 208, 187, 126, 249, 238, 191, 6, 97, 118, 236, 65, 151, 181, 167},
+  /* Write Here */ {54, 5, 116, 129, 237, 213, 151, 182, 254, 214, 224, 198, 60, 31, 220, 122},
+  /* Write Here */ {151, 235, 226, 7, 250, 10, 105, 148, 71, 121, 245, 179, 82, 61, 206, 6},
+  /* Write Here */ {27, 129, 42, 105, 9, 175, 116, 232, 107, 119, 188, 29, 224, 127, 91, 145},
+  /* Write Here */ {238, 177, 142, 99, 161, 29, 223, 214, 23, 15, 51, 125, 221, 244, 153, 30},
+  /* Write Here */ {230, 114, 76, 54, 132, 193, 123, 103, 171, 145, 118, 49, 71, 70, 249, 103},
+  /* Write Here */ {130, 156, 164, 76, 212, 4, 71, 8, 212, 135, 147, 72, 19, 206, 212, 174},
+  /* Write Here */ {134, 176, 251, 22, 138, 170, 8, 66, 139, 187, 102, 238, 180, 64, 239, 101},
+  /* Write Here */ {135, 135, 12, 27, 171, 238, 173, 3, 35, 102, 47, 72, 248, 254, 128, 220},
+  /* Write Here */ {205, 125, 141, 19, 250, 227, 58, 153, 135, 22, 248, 92, 186, 244, 66, 217},
+  /* Write Here */ {134, 189, 87, 244, 137, 134, 242, 126, 45, 116, 225, 55, 95, 93, 80, 220},
+  /* Write Here */ {126, 197, 71, 35, 199, 54, 96, 162, 54, 186, 41, 0, 131, 205, 132, 40},
+  /* Write Here */ {200, 70, 213, 4, 12, 119, 225, 25, 43, 112, 62, 150, 224, 53, 241, 241},
+  /* Write Here */ {59, 36, 91, 208, 152, 95, 216, 54, 183, 188, 25, 93, 168, 179, 192, 233},
+  /* Write Here */ {147, 173, 173, 171, 41, 132, 161, 211, 91, 167, 23, 104, 225, 185, 254, 15},
+  /* Write Here */ {230, 103, 216, 205, 86, 245, 145, 223, 203, 44, 77, 69, 222, 36, 226, 234},
+  /* Write Here */ {116, 154, 144, 197, 139, 108, 7, 126, 20, 248, 11, 83, 164, 97, 145, 155},
+  /* Write Here */ {106, 6, 220, 199, 76, 199, 138, 35, 215, 224, 121, 223, 69, 44, 233, 205},
+  /* Write Here */ {214, 141, 122, 184, 243, 122, 12, 249, 64, 201, 213, 189, 180, 83, 4, 236},
+  /* Write Here */ {177, 21, 199, 109, 183, 92, 238, 57, 144, 20, 183, 149, 49, 104, 20, 126},
+  /* Write Here */ {235, 114, 187, 192, 80, 43, 16, 113, 126, 155, 84, 77, 75, 96, 108, 183},
+  /* Write Here */ {17, 2, 185, 133, 238, 209, 47, 162, 7, 189, 135, 104, 104, 59, 240, 216},
+  /* Write Here */ {66, 12, 8, 99, 38, 90, 145, 36, 233, 110, 70, 44, 57, 99, 208, 52},
+  /* Write Here */ {200, 138, 173, 131, 51, 11, 168, 26, 81, 23, 85, 71, 246, 150, 255, 198},
+  /* Write Here */ {150, 204, 32, 208, 38, 170, 142, 96, 248, 79, 183, 57, 20, 150, 3, 36},
+  /* Write Here */ {36, 102, 74, 94, 11, 35, 27, 214, 171, 219, 138, 181, 129, 236, 51, 65},
+  /* Write Here */ {78, 100, 28, 255, 165, 24, 147, 106, 219, 187, 103, 27, 188, 102, 169, 146},
+  /* Write Here */ {13, 164, 184, 198, 218, 223, 26, 231, 1, 44, 5, 165, 151, 51, 23, 109},
+  /* Write Here */ {117, 204, 189, 125, 65, 34, 85, 211, 62, 7, 163, 125, 138, 232, 15, 174},
+  /* Write Here */ {86, 137, 215, 62, 72, 25, 39, 14, 213, 78, 188, 192, 65, 160, 23, 192},
+  /* Write Here */ {132, 128, 195, 156, 59, 253, 238, 186, 195, 151, 138, 227, 209, 210, 208, 36},
+  /* Write Here */ {20, 2, 124, 168, 58, 11, 45, 9, 81, 18, 23, 38, 144, 161, 137, 181},
+  /* Write Here */ {67, 33, 154, 196, 50, 46, 179, 200, 27, 183, 90, 37, 232, 246, 218, 123},
+  /* Write Here */ {56, 146, 77, 162, 48, 37, 130, 89, 89, 83, 233, 49, 244, 116, 111, 59},
+  /* Write Here */ {22, 107, 8, 127, 223, 53, 218, 168, 212, 31, 54, 250, 113, 179, 183, 39},
+  /* Write Here */ {143, 246, 99, 98, 158, 255, 87, 235, 188, 95, 248, 120, 117, 146, 38, 159},
+  /* Write Here */ {9, 185, 223, 130, 152, 111, 114, 237, 252, 31, 111, 214, 47, 42, 80, 245},
+  /* Write Here */ {197, 83, 142, 4, 249, 231, 253, 166, 41, 55, 1, 3, 2, 8, 132, 147},
+  /* Write Here */ {139, 139, 216, 204, 206, 70, 59, 83, 93, 183, 1, 132, 1, 174, 246, 91},
+  /* Write Here */ {222, 103, 192, 97, 189, 210, 230, 39, 248, 128, 26, 65, 34, 209, 144, 197},
+  /* Write Here */ {132, 82, 100, 83, 65, 139, 179, 239, 157, 148, 129, 248, 164, 233, 18, 158},
+  /* Write Here */ {154, 65, 162, 175, 106, 49, 46, 67, 27, 153, 11, 81, 159, 208, 46, 189},
+  /* Write Here */ {87, 148, 181, 16, 68, 120, 167, 4, 2, 17, 39, 220, 89, 153, 156, 217},
+  /* Write Here */ {202, 179, 112, 224, 30, 225, 230, 167, 224, 32, 154, 117, 18, 35, 98, 191},
+  /* Write Here */ {74, 180, 48, 29, 15, 210, 75, 210, 158, 230, 227, 251, 5, 226, 207, 243},
+  /* Write Here */ {52, 181, 247, 91, 93, 89, 13, 155, 48, 209, 61, 132, 101, 78, 205, 226},
+  /* Write Here */ {44, 111, 79, 202, 10, 12, 251, 43, 196, 94, 207, 124, 208, 150, 23, 197},
+  /* Write Here */ {69, 240, 126, 120, 157, 75, 67, 85, 255, 124, 243, 25, 60, 201, 38, 139},
+  /* Write Here */ {37, 245, 145, 212, 78, 15, 107, 72, 141, 247, 202, 54, 221, 9, 105, 3},
+  /* Write Here */ {150, 45, 167, 119, 173, 44, 125, 148, 107, 62, 90, 146, 87, 5, 108, 178},
+  /* Write Here */ {116, 177, 83, 28, 42, 106, 193, 119, 3, 247, 65, 196, 44, 18, 60, 159},
+  /* Write Here */ {58, 35, 151, 33, 13, 247, 219, 90, 20, 63, 167, 35, 38, 182, 127, 76},
+  /* Write Here */ {70, 54, 120, 179, 180, 63, 61, 38, 31, 119, 132, 128, 109, 211, 187, 162},
+  /* Write Here */ {172, 212, 224, 29, 42, 182, 238, 145, 110, 148, 111, 225, 22, 158, 86, 44},
+  /* Write Here */ {133, 29, 221, 188, 200, 80, 29, 193, 74, 217, 229, 109, 96, 70, 120, 122},
+  /* Write Here */ {75, 231, 67, 197, 28, 106, 5, 237, 127, 65, 186, 46, 16, 246, 48, 179},
+  /* Write Here */ {31, 150, 39, 146, 78, 5, 82, 55, 4, 78, 174, 77, 86, 199, 127, 125},
+  /* Write Here */ {25, 144, 222, 143, 10, 177, 100, 153, 222, 163, 112, 124, 52, 35, 123, 223},
+  /* Write Here */ {73, 41, 157, 201, 248, 94, 95, 118, 239, 193, 109, 47, 155, 33, 52, 113},
+  /* Write Here */ {230, 193, 229, 171, 152, 72, 232, 232, 82, 30, 249, 248, 156, 118, 53, 203},
+  /* Write Here */ {108, 141, 201, 52, 69, 64, 223, 246, 175, 148, 95, 149, 134, 96, 82, 156},
+  /* Write Here */ {65, 8, 218, 248, 91, 68, 186, 168, 64, 26, 116, 57, 77, 191, 140, 17},
+  /* Write Here */ {45, 185, 163, 73, 236, 126, 64, 120, 37, 164, 146, 86, 64, 245, 94, 168},
+  /* Write Here */ {86, 143, 125, 91, 254, 143, 186, 200, 247, 229, 229, 4, 178, 186, 81, 177},
+  /* Write Here */ {143, 133, 32, 253, 157, 45, 74, 134, 114, 246, 16, 162, 43, 24, 140, 9},
+  /* Write Here */ {47, 249, 189, 231, 88, 7, 59, 193, 211, 112, 200, 43, 138, 221, 172, 40},
+  /* Write Here */ {124, 31, 97, 183, 18, 52, 71, 38, 177, 118, 244, 89, 189, 2, 50, 159},
+  /* Write Here */ {245, 168, 246, 52, 41, 136, 79, 60, 176, 238, 231, 242, 67, 174, 63, 120},
+  /* Write Here */ {227, 91, 90, 132, 58, 214, 21, 243, 57, 241, 14, 104, 22, 27, 8, 117},
+  /* Write Here */ {98, 224, 250, 200, 195, 225, 81, 126, 23, 239, 58, 58, 202, 91, 233, 178},
+  /* Write Here */ {73, 95, 110, 216, 241, 155, 124, 199, 141, 170, 179, 186, 74, 154, 28, 7},
+  /* Write Here */ {99, 15, 169, 2, 186, 237, 7, 163, 80, 209, 177, 189, 144, 201, 31, 6},
+  /* Write Here */ {0, 124, 11, 207, 1, 55, 154, 189, 98, 156, 99, 64, 170, 80, 227, 189},
+  /* Write Here */ {141, 95, 8, 203, 177, 121, 41, 60, 216, 248, 199, 172, 254, 92, 27, 196},
+  /* Write Here */ {13, 223, 56, 168, 111, 218, 193, 210, 188, 11, 81, 52, 82, 100, 50, 237},
+  /* Write Here */ {138, 143, 106, 26, 48, 243, 78, 147, 11, 110, 36, 173, 11, 149, 241, 211},
+  /* Write Here */ {80, 92, 77, 211, 118, 16, 134, 18, 86, 80, 141, 52, 224, 175, 31, 236},
+  /* Write Here */ {75, 17, 31, 126, 244, 182, 87, 142, 152, 26, 21, 56, 211, 126, 42, 118},
+  /* Write Here */ {53, 135, 51, 95, 143, 158, 14, 115, 244, 188, 85, 210, 32, 103, 211, 193},
+  /* Write Here */ {37, 107, 15, 236, 180, 127, 155, 198, 66, 110, 63, 45, 191, 36, 111, 191},
+  /* Write Here */ {183, 183, 177, 121, 168, 34, 89, 101, 59, 139, 64, 103, 244, 59, 24, 102},
+  /* Write Here */ {101, 92, 28, 221, 125, 104, 88, 176, 202, 35, 156, 130, 233, 161, 98, 134},
+  /* Write Here */ {111, 48, 94, 133, 7, 58, 47, 21, 158, 109, 50, 188, 159, 142, 80, 164},
+  /* Write Here */ {180, 255, 168, 132, 122, 212, 162, 15, 236, 18, 39, 207, 109, 248, 224, 142},
+  /* Write Here */ {77, 0, 197, 233, 37, 200, 66, 200, 212, 156, 183, 76, 208, 92, 195, 223},
+  /* Write Here */ {48, 39, 121, 34, 32, 69, 144, 96, 157, 7, 218, 140, 100, 47, 22, 253},
+  /* Write Here */ {220, 49, 127, 209, 136, 58, 42, 44, 209, 130, 37, 160, 237, 155, 1, 55},
+  /* Write Here */ {167, 190, 202, 163, 34, 19, 192, 79, 115, 21, 52, 193, 209, 154, 219, 252},
+  /* Write Here */ {62, 20, 46, 78, 65, 155, 79, 9, 80, 122, 93, 113, 198, 231, 118, 163},
+  /* Write Here */ {208, 144, 131, 25, 173, 17, 112, 72, 158, 155, 70, 22, 137, 92, 33, 194},
+  /* Write Here */ {140, 81, 249, 240, 48, 5, 61, 7, 59, 24, 33, 223, 215, 125, 14, 142},
+  /* Write Here */ {222, 109, 157, 165, 205, 224, 202, 244, 198, 65, 111, 95, 139, 53, 248, 33},
+  /* Write Here */ {206, 171, 18, 101, 106, 24, 85, 224, 10, 54, 129, 239, 174, 28, 22, 45},
+  /* Write Here */ {111, 41, 193, 222, 29, 200, 17, 241, 55, 168, 213, 29, 73, 39, 47, 16},
+  /* Write Here */ {20, 180, 93, 8, 148, 247, 30, 72, 219, 159, 63, 141, 147, 81, 171, 223},
+  /* Write Here */ {168, 157, 244, 8, 101, 234, 177, 115, 114, 207, 73, 12, 99, 92, 173, 85},
+  /* Write Here */ {176, 110, 79, 170, 197, 19, 152, 54, 186, 164, 48, 159, 37, 221, 61, 55},
+  /* Write Here */ {157, 87, 49, 59, 58, 214, 33, 109, 44, 120, 24, 136, 174, 105, 184, 177},
+  /* Write Here */ {214, 90, 104, 65, 79, 7, 100, 131, 236, 254, 169, 175, 206, 216, 26, 141},
+  /* Write Here */ {150, 157, 63, 202, 124, 205, 126, 186, 168, 0, 193, 237, 140, 94, 165, 117},
+  /* Write Here */ {176, 166, 253, 178, 40, 247, 95, 84, 118, 139, 159, 55, 226, 133, 28, 222},
+  /* Write Here */ {128, 15, 60, 193, 155, 174, 11, 82, 99, 121, 244, 34, 134, 83, 62, 253},
+  /* Write Here */ {170, 103, 144, 7, 110, 255, 128, 191, 121, 51, 132, 134, 25, 147, 237, 243},
+  /* Write Here */ {44, 219, 252, 68, 117, 200, 96, 42, 47, 207, 110, 84, 198, 19, 131, 126},
+  /* Write Here */ {27, 216, 157, 119, 113, 39, 71, 247, 133, 2, 62, 182, 57, 235, 16, 182},
+  /* Write Here */ {82, 132, 227, 33, 5, 141, 116, 10, 146, 34, 199, 17, 169, 98, 254, 11},
+  /* Write Here */ {242, 61, 119, 12, 58, 140, 168, 187, 99, 89, 85, 23, 127, 105, 213, 93},
+  /* Write Here */ {48, 115, 50, 235, 60, 203, 159, 249, 24, 5, 234, 64, 220, 39, 252, 219},
+  /* Write Here */ {125, 122, 200, 181, 43, 125, 132, 10, 141, 27, 101, 185, 40, 66, 49, 233},
+  /* Write Here */ {154, 147, 101, 12, 28, 240, 172, 69, 221, 132, 99, 49, 152, 80, 79, 222},
+  /* Write Here */ {31, 130, 209, 107, 215, 73, 122, 233, 121, 240, 173, 36, 77, 11, 212, 161},
+  /* Write Here */ {169, 239, 178, 10, 140, 132, 17, 45, 19, 39, 105, 227, 229, 243, 50, 105},
+  /* Write Here */ {195, 239, 25, 22, 184, 108, 122, 187, 212, 14, 232, 241, 149, 112, 53, 35},
+  /* Write Here */ {46, 65, 210, 0, 67, 234, 79, 81, 79, 172, 198, 194, 243, 146, 33, 203},
+  /* Write Here */ {110, 13, 9, 71, 82, 172, 162, 233, 241, 216, 194, 152, 26, 243, 216, 17},
+  /* Write Here */ {154, 193, 141, 177, 161, 26, 227, 103, 168, 223, 93, 3, 198, 25, 185, 235},
+  /* Write Here */ {11, 26, 247, 15, 199, 159, 74, 235, 202, 250, 112, 178, 12, 126, 140, 41},
+  /* Write Here */ {17, 136, 36, 21, 72, 130, 247, 236, 177, 183, 141, 19, 170, 227, 70, 53},
+  /* Write Here */ {146, 224, 224, 227, 87, 87, 172, 187, 68, 102, 158, 147, 240, 106, 159, 140},
+  /* Write Here */ {117, 153, 200, 164, 176, 79, 255, 92, 128, 11, 76, 42, 120, 17, 245, 115}};
 
 
 // Firmware Constants
 #define METADATA_BASE 0xFC00 // base address of version and firmware size in Flash
-#define FW_BASE 0x10000		 // base address of firmware in Flash
+#define FW_BASE 0x10000                 // base address of firmware in Flash
 
 
 // FLASH Constants
@@ -255,35 +255,35 @@ uint8_t *fw_release_message_address;
 
 
 int main(void) {
-	// Initialize UART channels
-	// 0: Reset
-	// 1: Host Connection
-	// 2: Debug
-	uart_init(UART0);
-	uart_init(UART1);
-	uart_init(UART2);
+       // Initialize UART channels
+       // 0: Reset
+       // 1: Host Connection
+       // 2: Debug
+       uart_init(UART0);
+       uart_init(UART1);
+       uart_init(UART2);
 
-	// Enable UART0 interrupt
-	IntEnable(INT_UART0);
-	IntMasterEnable();
+       // Enable UART0 interrupt
+       IntEnable(INT_UART0);
+       IntMasterEnable();
 
-	load_initial_firmware();
+       load_initial_firmware();
 
-	uart_write_str(UART2, "Welcome to the BWSI Vehicle Update Service!\n");
-	uart_write_str(UART2, "Send \"U\" to update, and \"B\" to run the firmware.\n");
-	uart_write_str(UART2, "Writing 0x20 to UART0 will reset the device.\n");
+       uart_write_str(UART2, "Welcome to the BWSI Vehicle Update Service!\n");
+       uart_write_str(UART2, "Send \"U\" to update, and \"B\" to run the firmware.\n");
+       uart_write_str(UART2, "Writing 0x20 to UART0 will reset the device.\n");
 
-	int resp;
-	while(1) {
-		uint32_t instruction = uart_read(UART1, BLOCKING, &resp);
-		if(instruction == UPDATE) {
-			uart_write_str(UART1, "U");
-			load_firmware();
-		} else if(instruction == BOOT) {
-			uart_write_str(UART1, "B");
-			boot_firmware();
-		}
-	}
+       int resp;
+       while(1) {
+               uint32_t instruction = uart_read(UART1, BLOCKING, &resp);
+               if(instruction == UPDATE) {
+                       uart_write_str(UART1, "U");
+                       load_firmware();
+               } else if(instruction == BOOT) {
+                       uart_write_str(UART1, "B");
+                       boot_firmware();
+               }
+       }
 }
 
 
@@ -291,31 +291,31 @@ int main(void) {
  * Load initial firmware into flash
  */
 void load_initial_firmware(void) {
-	if(*((uint32_t *)(METADATA_BASE + 512)) != 0) {
-		/*
-		 * Default Flash startup state in QEMU is all zeros since it is
-		 * secretly a RAM region for emulation purposes. Only load initial
-		 * firmware when metadata page is all zeros. Do this by checking
-		 * 4 bytes at the half-way point, since the metadata page is filled
-		 * with 0xFF after an erase in this function (program_flash()).
-		 */
-		return;
-	}
+       if(*((uint32_t *)(METADATA_BASE + 512)) != 0) {
+               /*
+                * Default Flash startup state in QEMU is all zeros since it is
+                * secretly a RAM region for emulation purposes. Only load initial
+                * firmware when metadata page is all zeros. Do this by checking
+                * 4 bytes at the half-way point, since the metadata page is filled
+                * with 0xFF after an erase in this function (program_flash()).
+                */
+               return;
+       }
 
-	int size = (int)&_binary_firmware_bin_size;
-	int *data = (int *)&_binary_firmware_bin_start;
+       int size = (int)&_binary_firmware_bin_size;
+       int *data = (int *)&_binary_firmware_bin_start;
 
-	uint16_t version = 2;
-	uint32_t metadata = (((uint16_t)size & 0xFFFF) << 16) | (version & 0xFFFF);
-	program_flash(METADATA_BASE, (uint8_t *)(&metadata), 4);
-	fw_release_message_address = (uint8_t *)"This is the initial release message.";
+       uint16_t version = 2;
+       uint32_t metadata = (((uint16_t)size & 0xFFFF) << 16) | (version & 0xFFFF);
+       program_flash(METADATA_BASE, (uint8_t *)(&metadata), 4);
+       fw_release_message_address = (uint8_t *)"This is the initial release message.";
 
-	int i = 0;
-	for(; i < size / FLASH_PAGESIZE; i++) {
-		program_flash(FW_BASE + (i * FLASH_PAGESIZE), ((unsigned char *)data) + (i * FLASH_PAGESIZE), FLASH_PAGESIZE);
-	}
-	program_flash(FW_BASE + (i * FLASH_PAGESIZE), ((unsigned char *)data) + (i * FLASH_PAGESIZE),
-				  size % FLASH_PAGESIZE);
+       int i = 0;
+       for(; i < size / FLASH_PAGESIZE; i++) {
+               program_flash(FW_BASE + (i * FLASH_PAGESIZE), ((unsigned char *)data) + (i * FLASH_PAGESIZE), FLASH_PAGESIZE);
+       }
+       program_flash(FW_BASE + (i * FLASH_PAGESIZE), ((unsigned char *)data) + (i * FLASH_PAGESIZE),
+                                 size % FLASH_PAGESIZE);
 }
 
 
@@ -323,75 +323,75 @@ void load_initial_firmware(void) {
  * Load the firmware into flash.
  */
 void load_firmware(void) {
-	// maybe useful variables
-	int frame_length = 0;
-	int read = 0;
-	uint32_t rcv = 0;
+       // maybe useful variables
+       int frame_length = 0;
+       int read = 0;
+       uint32_t rcv = 0;
 
-	uint32_t data_index = 0;
-	uint32_t page_addr = FW_BASE;
-	uint32_t version = 0;
-	uint32_t firm_size = 0;
-	uint32_t message_size = 0;
+       uint32_t data_index = 0;
+       uint32_t page_addr = FW_BASE;
+       uint32_t version = 0;
+       uint32_t firm_size = 0;
+       uint32_t message_size = 0;
 
 
-	// Authentication check
-	int ret = 0;
-	char signature[256];
-	for(int i = 0; i < 256; i++) {
-		signature[i] = uart_read(UART1, BLOCKING, &ret);
-	}
-	int kn = uart_read(UART1, BLOCKING, &ret);
-	kn |= (uart_read(UART1, BLOCKING, &ret) << 8);
-	char iv[16];
-	for(int i = 0; i < 16; i++) {
-		iv[i] = uart_read(UART1, BLOCKING, &ret);
-	}
-	aes_decrypt(keys[kn], iv, signature, 256);
-	unsigned char sh[32];
-	sha_hash((unsigned char *)signature, 256, sh);
-	int authentic_sender = 1;
-	for(int i = 0; i < 32; i++) {
-		if(sh[i] != signaturehash[i]) {
-			authentic_sender = 0;
-		}
-	}
-	if(authentic_sender) {
-		uart_write(UART1, OK);
-	} else {
-		uart_write(UART1, ERROR);
-		return;
-	}
-	// RECEIVING METADATA STUFF
-	// receive version
-	rcv = uart_read(UART1, BLOCKING, &read);
-	version = (uint32_t)rcv;
-	rcv = uart_read(UART1, BLOCKING, &read);
-	version |= (uint32_t)rcv << 8;
+       // Authentication check
+       int ret = 0;
+       char signature[256];
+       for(int i = 0; i < 256; i++) {
+               signature[i] = uart_read(UART1, BLOCKING, &ret);
+       }
+       int kn = uart_read(UART1, BLOCKING, &ret);
+       kn |= (uart_read(UART1, BLOCKING, &ret) << 8);
+       char iv[16];
+       for(int i = 0; i < 16; i++) {
+               iv[i] = uart_read(UART1, BLOCKING, &ret);
+       }
+       aes_decrypt(keys[kn], iv, signature, 256);
+       unsigned char sh[32];
+       sha_hash((unsigned char *)signature, 256, sh);
+       int authentic_sender = 1;
+       for(int i = 0; i < 32; i++) {
+               if(sh[i] != signaturehash[i]) {
+                       authentic_sender = 0;
+               }
+       }
+       if(authentic_sender) {
+               uart_write(UART1, OK);
+       } else {
+               uart_write(UART1, ERROR);
+               return;
+       }
+       // RECEIVING METADATA STUFF
+       // receive version
+       rcv = uart_read(UART1, BLOCKING, &read);
+       version = (uint32_t)rcv;
+       rcv = uart_read(UART1, BLOCKING, &read);
+       version |= (uint32_t)rcv << 8;
 
-	// receive firmware size
-	rcv = uart_read(UART1, BLOCKING, &read);
-	firm_size = (uint32_t)rcv;
-	rcv = uart_read(UART1, BLOCKING, &read);
-	firm_size |= (uint32_t)rcv << 8;
+       // receive firmware size
+       rcv = uart_read(UART1, BLOCKING, &read);
+       firm_size = (uint32_t)rcv;
+       rcv = uart_read(UART1, BLOCKING, &read);
+       firm_size |= (uint32_t)rcv << 8;
 
-	// receive message size
-	rcv = uart_read(UART1, BLOCKING, &read);
-	message_size = (uint32_t)rcv;
-	rcv = uart_read(UART1, BLOCKING, &read);
-	message_size |= (uint32_t)rcv << 8;
-	uint16_t old_version = *fw_version_address;
-	if(version != 0 && version < old_version) {
-		uart_write(UART1, ERROR); // Reject the metadata.
-		SysCtlReset();			  // Reset device
-		return;
-	} else if(version == 0) {
-		// If debug firmware, don't change version
-		uart_write_str(UART2, "Debugging Version\n");
-		version = old_version;
-	}
-	uart_write(UART1, OK);
-	// Read Frames + integrity checks
+       // receive message size
+       rcv = uart_read(UART1, BLOCKING, &read);
+       message_size = (uint32_t)rcv;
+       rcv = uart_read(UART1, BLOCKING, &read);
+       message_size |= (uint32_t)rcv << 8;
+       uint16_t old_version = *fw_version_address;
+       if(version != 0 && version < old_version) {
+               uart_write(UART1, ERROR); // Reject the metadata.
+               SysCtlReset();                    // Reset device
+               return;
+       } else if(version == 0) {
+               // If debug firmware, don't change version
+               uart_write_str(UART2, "Debugging Version\n");
+               version = old_version;
+       }
+       uart_write(UART1, OK);
+       // Read Frames + integrity checks
 }
 
 
@@ -404,35 +404,35 @@ void load_firmware(void) {
  * the data.
  */
 long program_flash(uint32_t page_addr, unsigned char *data, unsigned int data_len) {
-	unsigned int padded_data_len;
+       unsigned int padded_data_len;
 
-	// Erase next FLASH page
-	FlashErase(page_addr);
+       // Erase next FLASH page
+       FlashErase(page_addr);
 
-	// Clear potentially unused bytes in last word
-	if(data_len % FLASH_WRITESIZE) {
-		// Get number unused
-		int rem = data_len % FLASH_WRITESIZE;
-		int i;
-		// Set to 0
-		for(i = 0; i < rem; i++) {
-			data[data_len - 1 - i] = 0x00;
-		}
-		// Pad to 4-byte word
-		padded_data_len = data_len + (FLASH_WRITESIZE - rem);
-	} else {
-		padded_data_len = data_len;
-	}
+       // Clear potentially unused bytes in last word
+       if(data_len % FLASH_WRITESIZE) {
+               // Get number unused
+               int rem = data_len % FLASH_WRITESIZE;
+               int i;
+               // Set to 0
+               for(i = 0; i < rem; i++) {
+                       data[data_len - 1 - i] = 0x00;
+               }
+               // Pad to 4-byte word
+               padded_data_len = data_len + (FLASH_WRITESIZE - rem);
+       } else {
+               padded_data_len = data_len;
+       }
 
-	// Write full buffer of 4-byte words
-	return FlashProgram((unsigned long *)data, page_addr, padded_data_len);
+       // Write full buffer of 4-byte words
+       return FlashProgram((unsigned long *)data, page_addr, padded_data_len);
 }
 
 
 void boot_firmware(void) {
-	uart_write_str(UART2, (char *)fw_release_message_address);
+       uart_write_str(UART2, (char *)fw_release_message_address);
 
-	// Boot the firmware
-	__asm("LDR R0,=0x10001\n\t"
-		  "BX R0\n\t");
+       // Boot the firmware
+       __asm("LDR R0,=0x10001\n\t"
+                 "BX R0\n\t");
 }
