@@ -27,6 +27,11 @@ def copy_initial_firmware(binary_path):
     shutil.copy(binary_path, bootloader / 'src' / 'firmware.bin')
 
 def keydecode(k):
+    """
+    Converts the python bytestring to a c-style char array with decimal elements
+    Return:
+        A string that can be pasted within curly braces in c to form a valid char[]
+    """
     s = []
     for i in k:
         s.append(str(i))
