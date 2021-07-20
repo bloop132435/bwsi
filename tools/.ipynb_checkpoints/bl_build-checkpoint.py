@@ -92,10 +92,10 @@ def make_bootloader():
     status = subprocess.call('make')
 
     #opening bootloader.c and removing all the keys/reverting it
-#     bc = open("../bootloader/src/bootloader.c", "w")
-#     for i in before:
-#         bc.write(i)
-#     bc.close()
+    bc = open("../bootloader/src/bootloader.c", "w")
+    for i in before:
+        bc.write(i)
+    bc.close()
 
     # Return True if make returned 0, otherwise return False.
     return (status == 0)
