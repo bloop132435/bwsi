@@ -80,8 +80,7 @@ def make_bootloader():
     status = subprocess.call('make')
 
     #opening bootloader.c and removing all the keys/reverting it
-    bc = open("design-challenge-2021-team-group-4/bootloader/src/bootloader.c",
-              "w")
+    bc = open("../bootloader/src/bootloader.c", "w")
     for i in before:
         bc.write(i)
     bc.close()
