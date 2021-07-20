@@ -4,7 +4,7 @@
 2. [Writing to secret file](#step-2)
 3. [Adding secrets to bootloader.c](#step-3)
 4. [Compiling](#step-4)
-5. [Remove secrets from](#step-5)
+5. [Remove secrets from bootloader.c](#step-5)
 
 ## Step 1
 Using the python [secrets](https://docs.python.org/3/library/secrets.html) module, generate a 256 byte signature that will be used for verification,
