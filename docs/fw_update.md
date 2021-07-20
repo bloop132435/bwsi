@@ -16,7 +16,7 @@ which happens due to null bytes, then keep looking. When a suitable key is found
 used and the IV, so that the C code will be able to decrypt it.
 
 ## Step 3
-The metadata is in the format of 3 little endian shorts, in the following order \
+The metadata is in the format of 3 little endian shorts, in the following order 
 1. Version number
 2. Size of the Firmware
 3. Size of the Release Message
