@@ -41,16 +41,18 @@ def make_bootloader():
     #Creating signature and hash
     signature = secrets.token_bytes(256)
     f = open("secret_output.txt", "wb")
-    f.write(signature + "\n".encode())
+    f.write(signature)
+    f.write("\n".encode())
     h = SHA256.new()
     h.update(signature)
-
+    
     #creating keys and writing to secret output txt
     keys = [b"" for _ in range(200)]
     for i in range(200):
         keys[i] = secrets.token_bytes(16)
     for i in range(200):
-        f.write(keys[i]  + '\n'.encode())
+        f.write(keys[i])
+        f.write("\n".encode())
     f.close()
 
     # opening bootloader and copying the before (no keys inside/original bootloader.c) and creating the after (keys inside bootloader.c)
@@ -63,16 +65,19 @@ def make_bootloader():
         if "Write Here" in l:
             # Add key
             index = l.find('{}')
-            index += 1
-            final = l[:index] + keydecode(keys[x]) + l[index:]
+            index = index + 1
+            final = l[:index] 
+            final = final + keydecode(keys[x]) 
+            final = final + l[index:]
             after.append(final)
             x += 1
         elif "Hash Here" in l:
             index = l.find('{}')
             index += 1
-            final = l[:index] + keydecode(h.digest()) + l[index:]
+            final = l[:index] 
+            final = final + keydecode(h.digest()) 
+            final = final + l[index:]
             after.append(final)
-            pass
         else:
             after.append(l)
     bc.close()
@@ -85,7 +90,8 @@ def make_bootloader():
 
     # making bootloader
     # Change into directory containing bootloader.
-    bootloader = FILE_DIR / '..' / 'bootloader'
+    bootloader = FILE_DIR / '..' 
+    bootloader = bootloader / 'bootloader'
     os.chdir(bootloader)
 
     subprocess.call('make clean', shell=True)
