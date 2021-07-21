@@ -34,20 +34,32 @@ FRAME_SIZE = 16
 debug = False
 
 
+def encode(m):
+    k = b""
+    l = [int(i) for i in m.split(" ")]
+    for i in l:
+        k += bytes([i])
+    return k
     
     
 def main(ser, infile, debug):
     
-    fp = open(infile, 'rb')
-    firmware_lines = fp.readlines()
+    fp = open(infile, 'r')
+    firmware_lines = [encode(i) for i in fp.readlines()]
     count = 0 
-    
-    
+    ser.write(b'U')
+    resp = b'asdf'
+    while resp != b'U':
+        resp = ser.read()
+        print(resp)
+    if debug:
+        print("Done handshaking")
     for line in firmware_lines:
         
         ser.write(line)
         
         resp = ser.read()
+        time.sleep(0.1)
         # Wait for an OK from the bootloader.
         if resp != RESP_OK:
             raise RuntimeError("ERROR: Bootloader responded with {}".format(repr(resp)))
@@ -59,7 +71,7 @@ def main(ser, infile, debug):
 
     
     print("Done writing firmware.")
-    ser.write(struct.pack('>H', 0x0000))  #send zero bytes 
+    ser.write(struct.pack('>Hh', 0x0000,0x0000))  #send zero bytes 
 
     
     return ser
@@ -77,6 +89,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     print('Opening serial port...')
-    ser = Serial(args.port, baudrate=115200, timeout=2)
+    ser = Serial(args.port, baudrate=115200, timeout=1)
     main(ser=ser, infile=args.firmware, debug=args.debug)
 

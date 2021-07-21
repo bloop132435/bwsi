@@ -73,7 +73,7 @@ def emulate(binary_path, debug=False):
             pass
         os.symlink(s_name, name)
 
-        ts.append(connect_socks(SocketSerial(name, port, log=False), master))
+        ts.append(connect_socks(SocketSerial(name, port), master))
         print(f'{name} is open')
 
     [t.join() for t in ts]

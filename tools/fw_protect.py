@@ -25,6 +25,23 @@ def chunk(message):
         cs.append(c)
     return cs
 
+def decode(k):
+    """
+    Converts the python bytestring to a c-style char array with decimal elements
+    Return:
+        A string that can be pasted within curly braces in c to form a valid char[]
+    """
+    s = []
+    for i in k:
+        s.append(str(i))
+    return ' '.join(s)
+
+def encode(m):
+    k = b""
+    l = [int(i) for i in m.split(" ")]
+    for i in l:
+        k += bytes([i])
+    return k
 
 def protect_firmware(infile, outfile, version, message):
     # Load firmware binary from infile
@@ -70,8 +87,14 @@ def protect_firmware(infile, outfile, version, message):
         data.append(d)
 
     # Write firmware blob to outfile
-    with open(outfile, 'wb+') as outfile:
-        outfile.writelines(data)
+    with open(outfile, 'w') as of:
+        convdata = [decode(i) + '\n' for i in data]
+        of.writelines(convdata)
+        
+    with open(outfile, 'r') as infile:
+#         print(infile.readlines())
+        convdata = [encode(i) for i in infile.readlines()]
+        print(convdata==data)
 
 
 if __name__ == '__main__':
