@@ -345,7 +345,9 @@ extern int _binary_firmware_bin_size;
 // Device metadata
 uint16_t *fw_version_address = (uint16_t *)METADATA_BASE;
 uint16_t *fw_size_address = (uint16_t *)(METADATA_BASE + 2);
+uint16_t *fw_message_size_address = (uint_8 *)(METADATA_BASE + 4);
 uint8_t *fw_release_message_address;
+
 
 
 int main(void) {
@@ -575,8 +577,10 @@ long program_flash(uint32_t page_addr, unsigned char *data, unsigned int data_le
 
 
 void boot_firmware(void) {
-       uart_write_str(UART2, (char *)fw_release_message_address);
-       u
+       //uart_write_str(UART2, (char *)fw_release_message_address);
+       for(int i = 0; i<fw_message_size_address; i++){
+           uart_write(UART2, fw_release_message_address[i]);
+       }
        // Boot the firmware
        __asm("LDR R0,=0x10001\n\t"
                  "BX R0\n\t");
