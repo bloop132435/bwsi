@@ -492,6 +492,7 @@ void load_firmware(void) {
                version = old_version;
        }
        uart_write(UART1, OK);
+    fw_release_message_address = (uint8_t *) (FW_BASE + firm_size); 
        // Read Frames + integrity checks
     unsigned char data[15000];
     int fsize=-1;
