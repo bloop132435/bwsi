@@ -345,7 +345,9 @@ extern int _binary_firmware_bin_size;
 // Device metadata
 uint16_t *fw_version_address = (uint16_t *)METADATA_BASE;
 uint16_t *fw_size_address = (uint16_t *)(METADATA_BASE + 2);
+uint16_t *fw_message_size_address = (uint_8 *)(METADATA_BASE + 4);
 uint8_t *fw_release_message_address;
+
 
 
 int main(void) {
@@ -471,6 +473,10 @@ void load_firmware(void) {
        message_size = (uint32_t)rcv;
        rcv = uart_read(UART1, BLOCKING, &read);
        message_size |= (uint32_t)rcv << 8;
+    
+       
+    
+    
        uint16_t old_version = *fw_version_address;
        if(version != 0 && version < old_version) {
                uart_write(UART1, ERROR); // Reject the metadata.
@@ -482,7 +488,13 @@ void load_firmware(void) {
                version = old_version;
        }
        uart_write(UART1, OK);
-    fw_release_message_address = (uint8_t *) (FW_BASE + firm_size); 
+    
+       long long metadata = (message_size & 0xFFFF) << 32)) | ((firm_size & 0xFFFF) << 16) | (version & 0xFFFF);
+    
+       program_flash(METADATA_BASE, (unsigned char*)(&metadata), 6);
+    
+       fw_release_message_address = (uint8_t*) (FW_BASE + firm_size);
+    
        // Read Frames + integrity checks
     unsigned char data[15000];
     int fsize=-1;
@@ -571,8 +583,10 @@ long program_flash(uint32_t page_addr, unsigned char *data, unsigned int data_le
 
 
 void boot_firmware(void) {
-       uart_write_str(UART2, (char *)fw_release_message_address);
-
+       //uart_write_str(UART2, (char *)fw_release_message_address);
+       for(int i = 0; i<fw_message_size_address; i++){
+           uart_write(UART2, fw_release_message_address[i]);
+       }
        // Boot the firmware
        __asm("LDR R0,=0x10001\n\t"
                  "BX R0\n\t");
