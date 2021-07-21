@@ -474,6 +474,14 @@ void load_firmware(void) {
        message_size = (uint32_t)rcv;
        rcv = uart_read(UART1, BLOCKING, &read);
        message_size |= (uint32_t)rcv << 8;
+    
+       long long metadata = (message_size & 0xFFFF) << 32)) | ((firm_size & 0xFFFF) << 16) | (version & 0xFFFF);
+    
+       program_flash(METADATA_BASE, (unsigned char*)(&metadata), 6);
+    
+       fw_release_message_address = (uint8_t*) (FW_BASE + firm_size);
+    
+    
        uint16_t old_version = *fw_version_address;
        if(version != 0 && version < old_version) {
                uart_write(UART1, ERROR); // Reject the metadata.
@@ -525,7 +533,7 @@ long program_flash(uint32_t page_addr, unsigned char *data, unsigned int data_le
 
 void boot_firmware(void) {
        uart_write_str(UART2, (char *)fw_release_message_address);
-
+       u
        // Boot the firmware
        __asm("LDR R0,=0x10001\n\t"
                  "BX R0\n\t");
