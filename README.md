@@ -5,7 +5,7 @@ Approved for public release. Distribution unlimited PR_21-00407-6.
 # TODO list
 - [ ] Bootloader
 	- [ ] Firmware Updating
-		- [x] Authentication Check
+		- [ ] Authentication Check
 		- [ ] Metadata
 		- [ ] Reading and Verifying Data
 	- [ ] Booting

@@ -1,34 +1,27 @@
-# FW Protect
+# FW UPDATE
 ## Overview
-1. [Read in Secrets](#step-1)
-2. [Encrypt Signature](#step-2)
-3. [Create Metadata](#step-3)
-4. [Chunk the data](#step-4)
-5. [Encrypt the chunks](#step-5)
-6. [Write to File](#step-6)
+1. [Read in file](#step-1)
+2. [Send in chunk](#step-2)
+3. [Wait for response](#step-3)
+4. [Print line info](#step-4)
+5. [Send zero byte](#step-5)
 
 ## Step 1
-Read in the data from secret_output.txt, and split it up by lines into the signature, and the data.
+Read, in lines, the "infile", which was arranged in FW Protect. Each line/chunk includes:
+- Length of the chunk (format <h)
+- Number corresponding to the key used to encrypt(format <h), 
+- Encrypted FW
+- Hash (SHA256)
+- IV used
 
 ## Step 2
-Choose a random number from 0-199 to find which key to use for the signature. If the key happens to be less than 16 bytes long,
-which happens due to null bytes, then keep looking. When a suitable key is found, encrypt the signature using that key, then save the number of the key
-used and the IV, so that the C code will be able to decrypt it.
+Send one line from the infile over serial to the bootloader.
 
 ## Step 3
-The metadata is in the format of 3 little endian shorts, in the following order 
-1. Version number
-2. Size of the Firmware
-3. Size of the Release Message
+Wait for an OK from the bootloader. If the response is not an OK, raise an error.
 
 ## Step 4
-Chunk the data using the chunk function, which takes a maximum size of 128 bytes from the message at a time, and keep the chunked data
+After the OK from the bootloader, print the line number. Return to [Step 2](#step-2) until the last line is sent.
 
 ## Step 5
-Calculate the hash of the chunk, and save it. Using the same key choosing principle as [Step 2](#step-2), choose a key and encrypt it.
-Save the key index, the length of the data, the encrypted data, the hash, and the iv as one unit
-
-## Step 6
-Take all the units, including the signature, the metadata, and the chunks, and write it to the outfile
-
-
+Send zero bytes to the bootloader
