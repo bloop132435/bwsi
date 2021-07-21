@@ -474,11 +474,7 @@ void load_firmware(void) {
        rcv = uart_read(UART1, BLOCKING, &read);
        message_size |= (uint32_t)rcv << 8;
     
-       long long metadata = (message_size & 0xFFFF) << 32)) | ((firm_size & 0xFFFF) << 16) | (version & 0xFFFF);
-    
-       program_flash(METADATA_BASE, (unsigned char*)(&metadata), 6);
-    
-       fw_release_message_address = (uint8_t*) (FW_BASE + firm_size);
+       
     
     
        uint16_t old_version = *fw_version_address;
@@ -492,7 +488,13 @@ void load_firmware(void) {
                version = old_version;
        }
        uart_write(UART1, OK);
-    fw_release_message_address = (uint8_t *) (FW_BASE + firm_size); 
+    
+       long long metadata = (message_size & 0xFFFF) << 32)) | ((firm_size & 0xFFFF) << 16) | (version & 0xFFFF);
+    
+       program_flash(METADATA_BASE, (unsigned char*)(&metadata), 6);
+    
+       fw_release_message_address = (uint8_t*) (FW_BASE + firm_size);
+    
        // Read Frames + integrity checks
     unsigned char data[15000];
     int fsize=-1;
