@@ -488,8 +488,11 @@ void load_firmware(void) {
     int fsize=-1;
     int idx = 0;
     do{
-        kn = (uart_read(UART1, BLOCKING, &read) << 8 | uart_read(UART1, BLOCKING, &read));
-        fsize = (uart_read(UART1, BLOCKING, &read) << 8 | uart_read(UART1, BLOCKING, &read));
+        kn = (uart_read(UART1, BLOCKING, &read)  | (uart_read(UART1, BLOCKING, &read) << 8));
+        fsize = (uart_read(UART1, BLOCKING, &read)  | (uart_read(UART1, BLOCKING, &read) << 8));
+        if(fsize==0){
+            break;
+        }
         unsigned char en[128];
         for(int i = 0;i<fsize;i++){
             en[i] = uart_read(UART1, BLOCKING, &read);
