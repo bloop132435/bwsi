@@ -418,12 +418,9 @@ void load_initial_firmware(void) {
  */
 void load_firmware(void) {
        // maybe useful variables
-       int frame_length = 0;
        int read = 0;
        uint32_t rcv = 0;
 
-       uint32_t data_index = 0;
-       uint32_t page_addr = FW_BASE;
        uint32_t version = 0;
        uint32_t firm_size = 0;
        uint32_t message_size = 0;
@@ -441,9 +438,9 @@ void load_firmware(void) {
        for(int i = 0; i < 16; i++) {
                iv[i] = uart_read(UART1, BLOCKING, &ret);
        }
-       aes_decrypt(keys[kn], iv, signature, 256);
+       aes_decrypt((char *)keys[kn], iv, signature, 256);
        unsigned char sh[32];
-       sha_hash((unsigned char *)signature, 256, sh);
+       sha_hash((unsigned char*)signature, 256, sh);
        int authentic_sender = 1;
        for(int i = 0; i < 32; i++) {
                if(sh[i] != signaturehash[i]) {
@@ -494,6 +491,52 @@ void load_firmware(void) {
        }
        uart_write(UART1, OK);
        // Read Frames + integrity checks
+    unsigned char data[15000];
+    int fsize=-1;
+    int idx = 0;
+    do{
+        kn = (uart_read(UART1, BLOCKING, &read) << 8 | uart_read(UART1, BLOCKING, &read));
+        fsize = (uart_read(UART1, BLOCKING, &read) << 8 | uart_read(UART1, BLOCKING, &read));
+        unsigned char en[128];
+        for(int i = 0;i<fsize;i++){
+            en[i] = uart_read(UART1, BLOCKING, &read);
+        }
+        unsigned char hash[32];
+        for(int i = 0;i<32;i++){
+            hash[i] = uart_read(UART1, BLOCKING, &read);
+        }
+        for(int i = 0;i<16;i++){
+            iv[i] = uart_read(UART1, BLOCKING, &read);
+        }
+        aes_decrypt((char *)keys[kn],(char * )iv,(char * )en,fsize);
+        unsigned char ehash[32];
+        sha_hash(en,fsize,ehash);
+        int intcheck = 1;
+        for(int i = 0;i<32;i++){
+            if(hash[i]!=ehash[i]){
+                intcheck = 0;
+            }
+        }
+        if(intcheck){
+            uart_write(UART1, OK);
+            for(int i = 0;i<fsize;i++,idx++){
+                data[idx] = en[i];
+            }
+        }
+        else{
+            uart_write(UART1, ERROR);
+            return;
+        }
+    }while(fsize!=0);
+    int numpages = (idx - 1)/FLASH_PAGESIZE;
+    for(int p = 0;p<numpages;p++){
+        uint32_t paddr = FW_BASE + FLASH_PAGESIZE * p;
+        unsigned int size = (firm_size + message_size - FLASH_PAGESIZE * p); 
+        if(size>FLASH_PAGESIZE){
+            size = FLASH_PAGESIZE;
+        }
+        program_flash(paddr, data + FLASH_PAGESIZE * p, size);
+    }
 }
 
 
