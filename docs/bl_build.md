@@ -18,7 +18,7 @@ Open bootloader.c as a file, and search for the appropriate places to put the ha
 each of the 200 keys (marked by `Write Here`)
 
 ## Step 4
-Now compile the bootloader by chanding directories to the bootloader directory, and invoking the following commands
+Now compile the bootloader by changing directories to the bootloader directory, and invoking the following commands
 ```bash
 make clean
 make
