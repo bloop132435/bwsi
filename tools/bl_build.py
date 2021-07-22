@@ -66,11 +66,12 @@ def make_bootloader():
     Return:
         True if successful, False otherwise.
     """
-    #Creating signature and hash
+    #Creating signature 
     signature = secrets.token_bytes(256)
     f = open("secret_output.txt", "w")
     f.write(decode(signature))
     f.write("\n")
+    #Creating hash
     h = SHA256.new()
     h.update(signature)
     
