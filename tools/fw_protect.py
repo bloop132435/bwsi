@@ -72,9 +72,9 @@ def protect_firmware(infile, outfile, version, message):
     data = [auth, metadata]
     for c in chunks:
 		# encrypting the chunks, and putting the data in order
-        hash = hashlib.sha256(c).digest()
+        hash = hashlib.sha256(c).digest() #hash of chunk
         l = len(c)
-        kn = random.randint(0, 199)
+        kn = random.randint(0, 199) 
         k = keys[kn]
         a = AES.new(k, AES.MODE_CBC, iv=get_random_bytes(16))
         en = a.encrypt(pad(c, AES.block_size))
