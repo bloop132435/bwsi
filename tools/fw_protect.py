@@ -56,17 +56,17 @@ def protect_firmware(infile, outfile, version, message):
     # Append null-terminated message to end of firmware
     firmware_and_message = firmware + message.encode()
     chunks = chunk(firmware_and_message)
-    lines = [encode(i.strip()) for i in open("secret_output.txt", "r").readlines()]
-    signature = lines[0]
-    keys = lines[1:]
+    lines = [encode(i.strip()) for i in open("secret_output.txt", "r").readlines()] #read data from secret_output.txt
+    signature = lines[0] 	#split data into signature
+    keys = lines[1:] 		#split data into keys
     random.seed(time.time())
     kn = random.randint(0, 199)
     k = keys[kn]
     aes = AES.new(k, AES.MODE_CBC)
     auth = aes.encrypt(pad(signature, AES.block_size)) + struct.pack(
-        "<h", kn) + aes.IV
+        "<h", kn) + aes.IV     
 
-    # Pack version and size into two little-endian shorts
+    # Pack version and size into three little-endian shorts
     metadata = struct.pack('<HHH', version, len(firmware), len(message))
 	# Init data
     data = [auth, metadata]
