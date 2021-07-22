@@ -84,7 +84,7 @@ def make_bootloader():
         f.write("\n")
     f.close()
 
-    # opening bootloader and copying the before (no keys inside/original bootloader.c) and creating the after (keys inside bootloader.c)
+    # opening bootloader and copying the before (no keys inside original bootloader.c) and creating the after (hash of signature and 200 keys inside bootloader.c)
     bc = open("../bootloader/src/bootloader.c", "r")
     after = []
     before = []
