@@ -100,6 +100,7 @@ def make_bootloader():
             after.append(final)
             x += 1
         elif "Hash Here" in l:
+			# Add hash
             index = l.find('{}')
             index += 1
             final = l[:index] 

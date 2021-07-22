@@ -36,9 +36,9 @@ debug = False
 
 def decode(k):
     """
-    Converts the python bytestring to a c-style char array with decimal elements
+    Converts the python bytestring to a string containing decimals
     Return:
-        A string that can be pasted within curly braces in c to form a valid char[]
+        Decoded string
     """
     s = []
     for i in k:
@@ -51,17 +51,19 @@ def encode(m):
 	Return:
 		The bytestring
 	"""
-    k = b""
-    l = [int(i) for i in m.split(" ")]
-    for i in l:
-        k += bytes([i])
-    return k
-    
+	k = b""
+	l = [int(i) for i in m.split(" ")]
+	for i in l:
+		k += bytes([i])
+	return k
 def main(ser, infile, debug):
     
+	# read in what do send
     fp = open(infile, 'r')
     firmware_lines = [encode(i) for i in fp.readlines()]
     count = 0 
+	
+	# Handshake
     ser.write(b'U')
     resp = b'asdf'
     while resp != b'U':
@@ -69,8 +71,9 @@ def main(ser, infile, debug):
         print(resp)
     if debug:
         print("Done handshaking")
+	
     for line in firmware_lines:
-        
+		# Send one line of data to bootloader
         ser.write(line)
         print(line)
         resp = ser.read()

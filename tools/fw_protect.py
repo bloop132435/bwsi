@@ -68,14 +68,14 @@ def protect_firmware(infile, outfile, version, message):
 
     # Pack version and size into two little-endian shorts
     metadata = struct.pack('<HHH', version, len(firmware), len(message))
-
+	# Init data
     data = [auth, metadata]
     for c in chunks:
+		# encrypting the chunks, and putting the data in order
         hash = hashlib.sha256(c).digest()
         l = len(c)
         kn = random.randint(0, 199)
         k = keys[kn]
-        print(k)
         a = AES.new(k, AES.MODE_CBC, iv=get_random_bytes(16))
         en = a.encrypt(pad(c, AES.block_size))
         d = b""
@@ -90,8 +90,8 @@ def protect_firmware(infile, outfile, version, message):
         convdata = [decode(i) + '\n' for i in data]
         of.writelines(convdata)
         
+	# Sanity check about write reliability, should print True
     with open(outfile, 'r') as infile:
-#         print(infile.readlines())
         convdata = [encode(i) for i in infile.readlines()]
         print(convdata==data)
 
