@@ -74,10 +74,15 @@ def main(ser, infile, debug):
 	
     for line in firmware_lines:
 		# Send one line of data to bootloader
-        ser.write(line)
-        print(line)
+#         ser.write(line)
+#         for i in line:
+#             ser.write(i)
+#             time.sleep(1)
+        for i in range(0,len(line),7):
+            ser.write(line[i:i+7])
+            print(line[i:i+7])
+            time.sleep(1)
         resp = ser.read()
-        time.sleep(0.1)
         # Wait for an OK from the bootloader.
         if resp != RESP_OK:
             raise RuntimeError("ERROR: Bootloader responded with {}".format(repr(resp)))
@@ -107,6 +112,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     print('Opening serial port...')
-    ser = Serial(args.port, baudrate=115200, timeout=1)
+    ser = Serial(args.port, baudrate=115200)
     main(ser=ser, infile=args.firmware, debug=args.debug)
 

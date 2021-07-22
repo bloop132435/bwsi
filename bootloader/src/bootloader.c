@@ -8,6 +8,8 @@
 #include "driverlib/flash.h"    // FLASH API
 #include "driverlib/sysctl.h"   // System control API (clock/reset)
 #include "driverlib/interrupt.h" // Interrupt API
+#include "driverlib/uart.h" // UART API
+#include "driverlib/sysctl.h" // Stystem Control API (clock/reset)
 
 // Application Imports
 #include "uart.h"
@@ -430,7 +432,7 @@ void load_firmware(void) {
     int ret = 0;
     char signature[256];
     uart_write(UART2, 1);
-    for( uart_write(UART2, 0), i = 0,uart_write(UART2, 1)
+    for( uart_write(UART2, 0),i=0
         ; i < 256
         ; i++, uart_write(UART2, 3)) {
         signature[i] = uart_read(UART1, BLOCKING, &ret);
