@@ -420,6 +420,7 @@ void load_firmware(void) {
        // maybe useful variables
        int read = 0;
        uint32_t rcv = 0;
+    unsigned char data[32000];
 
        uint32_t version = 0;
        uint32_t firm_size = 0;
@@ -489,7 +490,6 @@ void load_firmware(void) {
        uart_write(UART1, OK);
     fw_release_message_address = (uint8_t *) (FW_BASE + firm_size); 
        // Read Frames + integrity checks
-    unsigned char data[15000];
     int fsize=-1;
     int idx = 0;
     do{
