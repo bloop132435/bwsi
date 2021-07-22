@@ -8,7 +8,7 @@
 6. [Write to File](#step-6)
 
 ## Step 1
-Read in the data from secret_output.txt, and split it up by lines into the signature, and the data.
+Read in the data from secret_output.txt, and split it up by lines into the signature and the keys.
 
 ## Step 2
 Choose a random number from 0-199 to find which key to use for the signature. If the key happens to be less than 16 bytes long,
