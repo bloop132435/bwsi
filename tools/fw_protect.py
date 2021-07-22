@@ -27,9 +27,9 @@ def chunk(message):
 
 def decode(k):
     """
-    Converts the python bytestring to a c-style char array with decimal elements
+    Converts the python bytestring to a string containing decimals
     Return:
-        A string that can be pasted within curly braces in c to form a valid char[]
+        Decoded string
     """
     s = []
     for i in k:
@@ -37,11 +37,16 @@ def decode(k):
     return ' '.join(s)
 
 def encode(m):
-    k = b""
-    l = [int(i) for i in m.split(" ")]
-    for i in l:
-        k += bytes([i])
-    return k
+	"""
+	Converts a string of space separated decimal ints to a bytestring
+	Return:
+		The bytestring
+	"""
+	k = b""
+	l = [int(i) for i in m.split(" ")]
+	for i in l:
+		k += bytes([i])
+	return k
 
 def protect_firmware(infile, outfile, version, message):
     # Load firmware binary from infile
@@ -51,15 +56,12 @@ def protect_firmware(infile, outfile, version, message):
     # Append null-terminated message to end of firmware
     firmware_and_message = firmware + message.encode()
     chunks = chunk(firmware_and_message)
-    lines = [i.strip() for i in open("secret_output.txt", "rb").readlines()]
+    lines = [encode(i.strip()) for i in open("secret_output.txt", "r").readlines()]
     signature = lines[0]
     keys = lines[1:]
     random.seed(time.time())
     kn = random.randint(0, 199)
     k = keys[kn]
-    while len(k) != 16:
-        kn = random.randint(0,199)
-        k = keys[kn]
     aes = AES.new(k, AES.MODE_CBC)
     auth = aes.encrypt(pad(signature, AES.block_size)) + struct.pack(
         "<h", kn) + aes.IV
@@ -73,9 +75,6 @@ def protect_firmware(infile, outfile, version, message):
         l = len(c)
         kn = random.randint(0, 199)
         k = keys[kn]
-        while len(k) != 16:
-            kn = random.randint(0,199)
-            k = keys[kn]
         print(k)
         a = AES.new(k, AES.MODE_CBC, iv=get_random_bytes(16))
         en = a.encrypt(pad(c, AES.block_size))

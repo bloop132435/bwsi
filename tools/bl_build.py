@@ -26,6 +26,29 @@ def copy_initial_firmware(binary_path):
     bootloader = FILE_DIR / '..' / 'bootloader'
     shutil.copy(binary_path, bootloader / 'src' / 'firmware.bin')
 
+def decode(k):
+    """
+    Converts the python bytestring to a string containing decimals
+    Return:
+        Decoded string
+    """
+    s = []
+    for i in k:
+        s.append(str(i))
+    return ' '.join(s)
+
+def encode(m):
+	"""
+	Converts a string of space separated decimal ints to a bytestring
+	Return:
+		The bytestring
+	"""
+	k = b""
+	l = [int(i) for i in m.split(" ")]
+	for i in l:
+		k += bytes([i])
+	return k
+
 def keydecode(k):
     """
     Converts the python bytestring to a c-style char array with decimal elements
@@ -45,9 +68,9 @@ def make_bootloader():
     """
     #Creating signature and hash
     signature = secrets.token_bytes(256)
-    f = open("secret_output.txt", "wb")
-    f.write(signature)
-    f.write("\n".encode())
+    f = open("secret_output.txt", "w")
+    f.write(decode(signature))
+    f.write("\n")
     h = SHA256.new()
     h.update(signature)
     
@@ -56,8 +79,8 @@ def make_bootloader():
     for i in range(200):
         keys[i] = secrets.token_bytes(16)
     for i in range(200):
-        f.write(keys[i])
-        f.write("\n".encode())
+        f.write(decode(keys[i]))
+        f.write("\n")
     f.close()
 
     # opening bootloader and copying the before (no keys inside/original bootloader.c) and creating the after (keys inside bootloader.c)

@@ -424,12 +424,14 @@ void load_firmware(void) {
        uint32_t version = 0;
        uint32_t firm_size = 0;
        uint32_t message_size = 0;
-
-
+    int i = -1;
        // Authentication check
        int ret = 0;
        char signature[256];
-       for(int i = 0; i < 256; i++) {
+    signature[0] = uart_read(UART1, BLOCKING, &ret);
+    uart_write_str(UART2, "In load firmware function");
+       for( i = 0; i < 256; i++) {
+           uart_write_str(UART2, "a;sldkfj");
                signature[i] = uart_read(UART1, BLOCKING, &ret);
        }
     uart_write_str(UART2, "Got encrypted signature");
@@ -437,7 +439,7 @@ void load_firmware(void) {
        kn |= (uart_read(UART1, BLOCKING, &ret) << 8);
     uart_write_str(UART2, "Got key index");
        char iv[16];
-       for(int i = 0; i < 16; i++) {
+       for( i = 0; i < 16; i++) {
                iv[i] = uart_read(UART1, BLOCKING, &ret);
        }
     uart_write_str(UART2, "Got signature iv");

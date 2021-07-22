@@ -34,13 +34,28 @@ FRAME_SIZE = 16
 debug = False
 
 
+def decode(k):
+    """
+    Converts the python bytestring to a c-style char array with decimal elements
+    Return:
+        A string that can be pasted within curly braces in c to form a valid char[]
+    """
+    s = []
+    for i in k:
+        s.append(str(i))
+    return ' '.join(s)
+
 def encode(m):
+	"""
+	Converts a string of space separated decimal ints to a bytestring
+	Return:
+		The bytestring
+	"""
     k = b""
     l = [int(i) for i in m.split(" ")]
     for i in l:
         k += bytes([i])
     return k
-    
     
 def main(ser, infile, debug):
     
@@ -57,7 +72,7 @@ def main(ser, infile, debug):
     for line in firmware_lines:
         
         ser.write(line)
-        
+        print(line)
         resp = ser.read()
         time.sleep(0.1)
         # Wait for an OK from the bootloader.
