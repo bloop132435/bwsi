@@ -294,8 +294,7 @@ int main(void) {
  * Load initial firmware into flash
  */
 void load_initial_firmware(void) {
-
-  if (*((uint32_t*)(METADATA_BASE+512)) != 0){
+    if (*((uint32_t*)(METADATA_BASE)) != 0xFFFFFFFF){
     /*
      * Default Flash startup state in QEMU is all zeros since it is
      * secretly a RAM region for emulation purposes. Only load initial
@@ -337,45 +336,24 @@ void load_firmware(void)
     uint32_t message_size = 0;
     // Authentication check
     unsigned char signature[256];
-    for(int i = 0;i<290;i++){
+    for(int i = 0;i<274;i++){
         data[i] = uart_read(UART1, BLOCKING, &read);
     }
-    uart_write(UART2,2);
-    for(int i = 0;i<300;i++){
-        uart_write_hex(UART2,data[i]);
+    
+    for( int i=0 ; i < 256 ; i++) {
+        signature[i] = data[i];
     }
-//     for( int i=0 ; i < 256 ; i++) {
-//         uart_write(UART2,0);
-//         rcv = uart_read(UART1, BLOCKING, &read);
-//         uart_write(UART2,1);
-//         signature[i] = rcv;
-//         uart_write(UART2, 2);
-//     }
-    uart_write_str(UART2, "Got encrypted signature");
+    
     int kn;
-//      kn = uart_read(UART1, BLOCKING, &read);
-//     kn |= (uart_read(UART1, BLOCKING, &read) << 8);
-    uart_write_str(UART2, "Got key index");
+     kn = data[256];
+    kn |= data[257] << 8;
+    
     unsigned char iv[16];
-//     for( int i = 0; i < 16; i++) {
-//         iv[i] = uart_read(UART1, BLOCKING, &read);
-//     }
-    uart_write_str(UART2, "Got signature iv");
-//     for(int i = 0;i<16;i++){
-//         uart_write_hex(UART2, keys[kn][i]);
-//     }
-//     for(int i = 0;i<256;i++){
-//         uart_write_hex(UART2, signature[i]);
-//     }
-//     uart_write_hex(UART2, kn & 0xff );
-//     uart_write_hex(UART2, kn >> 8);
-//     for(int i = 0;i<16;i++){
-//         uart_write_hex(UART2, iv[i]);
-//     }
-//     aes_decrypt((char *)keys[kn], iv, signature, 256);
-//     for(int i = 0;i<256;i++){
-//         uart_write(UART2, signature[i]);
-//     }
+    for( int i = 0; i < 16; i++) {
+        iv[i] = data[i + 258];
+    }
+    
+    aes_decrypt((char *)keys[kn], iv, signature, 256);
     unsigned char sh[32];
     sha_hash((unsigned char*)signature, 256, sh);
     int authentic_sender = 1;
@@ -386,8 +364,10 @@ void load_firmware(void)
     }
     if(authentic_sender) {
         uart_write(UART1, OK);
+        uart_write_str(UART2, "passed auth check");
     } else {
         uart_write(UART1, ERROR);
+        uart_write_str(UART2, "failed auth check");
         return;
     }
     // RECEIVING METADATA STUFF
@@ -411,6 +391,7 @@ void load_firmware(void)
     uint16_t old_version = *fw_version_address;
     if(version != 0 && version < old_version) {
         uart_write(UART1, ERROR); // Reject the metadata.
+        uart_write_str(UART2, "Version Rollback Error \n");
         SysCtlReset();                    // Reset device
         return;
     } else if(version == 0) {
@@ -429,29 +410,48 @@ void load_firmware(void)
         if(fsize==0){
             break;
         }
+        uart_write_str(UART2, "Read sizes");
         unsigned char en[128];
         for(int i = 0;i<fsize;i++){
             en[i] = uart_read(UART1, BLOCKING, &read);
         }
+        uart_write_str(UART2, "Read ciphertext");
         unsigned char hash[32];
         for(int i = 0;i<32;i++){
             hash[i] = uart_read(UART1, BLOCKING, &read);
         }
+        uart_write_str(UART2, "Read hash");
         for(int i = 0;i<16;i++){
             iv[i] = uart_read(UART1, BLOCKING, &read);
         }
-        aes_decrypt((char *)keys[kn],(char * )iv,(char * )en,fsize);
+        uart_write_str(UART2, "Read iv");
+//         uart_write_hex(UART2, fsize);
+//         uart_write_hex(UART2, kn);
+//         for(int i = 0;i<fsize;i++){
+//             uart_write_hex(UART2, en[i]);
+//         }
+//         for(int i = 0;i<32;i++){
+//             uart_write_hex(UART2, hash[i]);
+//         }
+//         for(int i = 0;i<16;i++){
+//             uart_write_hex(UART2, iv[i]);
+//         }
+        aes_decrypt(keys[kn],iv,en,fsize);
+        for(int i = 0;i<)
+        uart_write_str(UART2, "decrypted ciphertext");
         unsigned char ehash[32];
         sha_hash(en,fsize,ehash);
+        uart_write_str(UART2, "hashed message");
         int intcheck = 1;
         for(int i = 0;i<32;i++){
             if(hash[i]!=ehash[i]){
                 intcheck = 0;
             }
         }
+        uart_write_str(UART2, "checked hash correct");
         if(intcheck){
             uart_write(UART1, OK);
-            for(int i = 0;i<fsize;i++,idx++){
+            for(int i = 0;i<fsize;i++/*,idx++*/){
                 data[idx] = en[i];
             }
         }

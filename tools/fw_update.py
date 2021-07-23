@@ -79,9 +79,9 @@ def main(ser, infile, debug):
 #             ser.write(i)
 #             print(i)
 #             time.sleep(1)
-        for i in range(0,len(line),7):
-            ser.write(line[i:i+7])
-            print(line[i:i+7])
+        for i in range(0,len(line),4):
+            ser.write(line[i:i+4])
+            print(line[i:i+4])
             time.sleep(0.1)
         resp = ser.read()
         # Wait for an OK from the bootloader.
@@ -91,7 +91,7 @@ def main(ser, infile, debug):
         
         count += 1
         
-        print("Line{}: {}".format(count, line.strip()))
+        print("Line {}: {}".format(count, line.strip()))
 
     
     print("Done writing firmware.")

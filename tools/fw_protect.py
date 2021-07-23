@@ -20,9 +20,15 @@ def chunk(message):
             size = len(message)
         c = b""
         for i in range(size):
+            print(i , len(c))
+            print(message[i])
+            print(chr(message[i]).encode())
+            assert(i==len(c))
             c += chr(message[i]).encode()
+            
         message = message[size:]
         cs.append(c)
+        print(size)
     return cs
 
 def decode(k):
@@ -55,7 +61,6 @@ def protect_firmware(infile, outfile, version, message):
 
     # Append null-terminated message to end of firmware
     firmware_and_message = firmware + message.encode()
-    chunks = chunk(firmware_and_message)
     lines = [encode(i.strip()) for i in open("secret_output.txt", "r").readlines()] #read data from secret_output.txt
     signature = lines[0] 	#split data into signature
     keys = lines[1:] 		#split data into keys
@@ -63,24 +68,28 @@ def protect_firmware(infile, outfile, version, message):
     kn = random.randint(0, 199)
     k = keys[kn]
     aes = AES.new(k, AES.MODE_CBC)
-    auth = aes.encrypt(pad(signature, AES.block_size)) + struct.pack(
+    auth = aes.encrypt(signature) + struct.pack(
         "<h", kn) + aes.IV     
-    print(auth)
-
     # Pack version and size into three little-endian shorts
     metadata = struct.pack('<HHH', version, len(firmware), len(message))
 	# Init data
     data = [auth, metadata]
-    for c in chunks:
+    for i in range(0,len(firmware_and_message),128):
+        c = firmware_and_message[i:i+128]
 		# encrypting the chunks, and putting the data in order
         hash = hashlib.sha256(c).digest() #hash of chunk
         l = len(c)
         kn = random.randint(0, 199) 
         k = keys[kn]
         a = AES.new(k, AES.MODE_CBC, iv=get_random_bytes(16))
-        en = a.encrypt(pad(c, AES.block_size))
+        en = b""
+        if len(c) %16 == 0:
+            en = a.encrypt(c)
+        else:
+            en = a.encrypt(pad(c, AES.block_size))
         d = b""
         d += struct.pack("<hh", kn, l)
+        print(l)
         d += en
         d += hash
         d += a.IV
