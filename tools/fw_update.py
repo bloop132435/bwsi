@@ -77,6 +77,7 @@ def main(ser, infile, debug):
 #         ser.write(line)
 #         for i in line:
 #             ser.write(i)
+#             print(i)
 #             time.sleep(1)
         for i in range(0,len(line),7):
             ser.write(line[i:i+7])
