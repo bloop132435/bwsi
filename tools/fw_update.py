@@ -82,7 +82,7 @@ def main(ser, infile, debug):
         for i in range(0,len(line),7):
             ser.write(line[i:i+7])
             print(line[i:i+7])
-            time.sleep(1)
+            time.sleep(0.1)
         resp = ser.read()
         # Wait for an OK from the bootloader.
         if resp != RESP_OK:

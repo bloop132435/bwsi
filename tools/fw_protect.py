@@ -65,6 +65,7 @@ def protect_firmware(infile, outfile, version, message):
     aes = AES.new(k, AES.MODE_CBC)
     auth = aes.encrypt(pad(signature, AES.block_size)) + struct.pack(
         "<h", kn) + aes.IV     
+    print(auth)
 
     # Pack version and size into three little-endian shorts
     metadata = struct.pack('<HHH', version, len(firmware), len(message))

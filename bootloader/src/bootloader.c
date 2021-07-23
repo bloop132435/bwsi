@@ -330,31 +330,52 @@ void load_firmware(void)
      // maybe useful variables
     int read = 0;
     uint32_t rcv = 0;
-    unsigned char data[320];
+    unsigned char data[1000];
 
     uint32_t version = 0;
     uint32_t firm_size = 0;
     uint32_t message_size = 0;
-
     // Authentication check
-    char signature[256];
-    for( int i=0 ; i < 256 ; i++) {
-        uart_write(UART2,0);
-        rcv = uart_read(UART1, BLOCKING, &read);
-        uart_write(UART2,1);
-        signature[i] = rcv;
-        uart_write(UART2, 2);
+    unsigned char signature[256];
+    for(int i = 0;i<290;i++){
+        data[i] = uart_read(UART1, BLOCKING, &read);
     }
+    uart_write(UART2,2);
+    for(int i = 0;i<300;i++){
+        uart_write_hex(UART2,data[i]);
+    }
+//     for( int i=0 ; i < 256 ; i++) {
+//         uart_write(UART2,0);
+//         rcv = uart_read(UART1, BLOCKING, &read);
+//         uart_write(UART2,1);
+//         signature[i] = rcv;
+//         uart_write(UART2, 2);
+//     }
     uart_write_str(UART2, "Got encrypted signature");
-    int kn = uart_read(UART1, BLOCKING, &read);
-    kn |= (uart_read(UART1, BLOCKING, &read) << 8);
+    int kn;
+//      kn = uart_read(UART1, BLOCKING, &read);
+//     kn |= (uart_read(UART1, BLOCKING, &read) << 8);
     uart_write_str(UART2, "Got key index");
-    char iv[16];
-    for( int i = 0; i < 16; i++) {
-        iv[i] = uart_read(UART1, BLOCKING, &read);
-    }
+    unsigned char iv[16];
+//     for( int i = 0; i < 16; i++) {
+//         iv[i] = uart_read(UART1, BLOCKING, &read);
+//     }
     uart_write_str(UART2, "Got signature iv");
-    aes_decrypt((char *)keys[kn], iv, signature, 256);
+//     for(int i = 0;i<16;i++){
+//         uart_write_hex(UART2, keys[kn][i]);
+//     }
+//     for(int i = 0;i<256;i++){
+//         uart_write_hex(UART2, signature[i]);
+//     }
+//     uart_write_hex(UART2, kn & 0xff );
+//     uart_write_hex(UART2, kn >> 8);
+//     for(int i = 0;i<16;i++){
+//         uart_write_hex(UART2, iv[i]);
+//     }
+//     aes_decrypt((char *)keys[kn], iv, signature, 256);
+//     for(int i = 0;i<256;i++){
+//         uart_write(UART2, signature[i]);
+//     }
     unsigned char sh[32];
     sha_hash((unsigned char*)signature, 256, sh);
     int authentic_sender = 1;
