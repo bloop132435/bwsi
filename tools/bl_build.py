@@ -96,6 +96,9 @@ def make_bootloader():
             index = l.find('{}')
             index = index + 1
             final = l[:index] 
+            print(x)
+            print(keys[x])
+            print(keydecode(keys[x]))
             final = final + keydecode(keys[x]) 
             final = final + l[index:]
             after.append(final)

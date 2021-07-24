@@ -21,107 +21,7 @@ long program_flash(uint32_t, unsigned char*, unsigned int);
 
 // TODO: Write this in bl build
 unsigned char signaturehash[32] = {} /* Hash Here */;
-unsigned char keys[200][17] = {
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
-    /* Write Here */ {},
+unsigned char keys[100][30] = {
     /* Write Here */ {},
     /* Write Here */ {},
     /* Write Here */ {},
@@ -262,6 +162,7 @@ int main(void) {
   // 0: Reset
   // 1: Host Connection
   // 2: Debug
+    
   uart_init(UART0);
   uart_init(UART1);
   uart_init(UART2);
@@ -271,7 +172,7 @@ int main(void) {
   IntMasterEnable();
 
   load_initial_firmware();
-
+  
   uart_write_str(UART2, "Welcome to the BWSI Vehicle Update Service!\n");
   uart_write_str(UART2, "Send \"U\" to update, and \"B\" to run the firmware.\n");
   uart_write_str(UART2, "Writing 0x20 to UART0 will reset the device.\n");
@@ -330,7 +231,8 @@ void load_firmware(void)
     int read = 0;
     uint32_t rcv = 0;
     unsigned char data[1000];
-
+    
+    int kn = 0;
     uint32_t version = 0;
     uint32_t firm_size = 0;
     uint32_t message_size = 0;
@@ -338,13 +240,13 @@ void load_firmware(void)
     unsigned char signature[256];
     for(int i = 0;i<274;i++){
         data[i] = uart_read(UART1, BLOCKING, &read);
+        uart_write(UART2,data[i]);
     }
     
     for( int i=0 ; i < 256 ; i++) {
         signature[i] = data[i];
     }
     
-    int kn;
      kn = data[256];
     kn |= data[257] << 8;
     
@@ -405,26 +307,36 @@ void load_firmware(void)
     int fsize=-1;
     int idx = 0;
     do{
-        kn = (uart_read(UART1, BLOCKING, &read)  | (uart_read(UART1, BLOCKING, &read) << 8));
+        
+        rcv = uart_read(UART1, BLOCKING, &read);
+        kn = (int)rcv;
+        rcv = uart_read(UART1, BLOCKING, &read);
+        kn |= (int)rcv << 8;
+        uart_write_str(UART2, "  READ KN   ");
+        uart_write(UART2,kn>>8);
+        uart_write(UART2,kn&0xFF);
         fsize = (uart_read(UART1, BLOCKING, &read)  | (uart_read(UART1, BLOCKING, &read) << 8));
+        uart_write_str(UART2, "  READ FILESIZE   ");
+        uart_write(UART2,fsize>>8);
+        uart_write(UART2,fsize&0xFF);
         if(fsize==0){
             break;
         }
-        uart_write_str(UART2, "Read sizes");
+        uart_write_str(UART2, "  Read sizes");
         unsigned char en[128];
         for(int i = 0;i<fsize;i++){
             en[i] = uart_read(UART1, BLOCKING, &read);
         }
-        uart_write_str(UART2, "Read ciphertext");
+        uart_write_str(UART2, "  Read ciphertext");
         unsigned char hash[32];
         for(int i = 0;i<32;i++){
             hash[i] = uart_read(UART1, BLOCKING, &read);
         }
-        uart_write_str(UART2, "Read hash");
+        uart_write_str(UART2, "  Read hash");
         for(int i = 0;i<16;i++){
             iv[i] = uart_read(UART1, BLOCKING, &read);
         }
-        uart_write_str(UART2, "Read iv");
+        uart_write_str(UART2, "  Read iv");
 //         uart_write_hex(UART2, fsize);
 //         uart_write_hex(UART2, kn);
 //         for(int i = 0;i<fsize;i++){
@@ -436,8 +348,12 @@ void load_firmware(void)
 //         for(int i = 0;i<16;i++){
 //             uart_write_hex(UART2, iv[i]);
 //         }
+        uart_write_str(UART2, "  KEY TO BE USED   ");
+        uart_write(UART2, keys[kn][0]);
+        
+
         aes_decrypt(keys[kn],iv,en,fsize);
-        for(int i = 0;i<)
+        //for(int i = 0;i<)
         uart_write_str(UART2, "decrypted ciphertext");
         unsigned char ehash[32];
         sha_hash(en,fsize,ehash);
@@ -448,14 +364,16 @@ void load_firmware(void)
                 intcheck = 0;
             }
         }
-        uart_write_str(UART2, "checked hash correct");
+        
         if(intcheck){
+            uart_write_str(UART2, "checked hash correct");
             uart_write(UART1, OK);
             for(int i = 0;i<fsize;i++/*,idx++*/){
                 data[idx] = en[i];
             }
         }
         else{
+            uart_write_str(UART2, "checked hash NOT correct");
             uart_write(UART1, ERROR);
             return;
         }

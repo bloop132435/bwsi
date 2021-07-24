@@ -79,9 +79,12 @@ def main(ser, infile, debug):
 #             ser.write(i)
 #             print(i)
 #             time.sleep(1)
-        for i in range(0,len(line),4):
-            ser.write(line[i:i+4])
-            print(line[i:i+4])
+        
+        print("LINE LENGTH")
+        print(len(line))
+        for i in range(0,len(line),16):
+            ser.write(line[i:i+16])
+            print(line[i:i+16])
             time.sleep(0.1)
         resp = ser.read()
         # Wait for an OK from the bootloader.
