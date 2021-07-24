@@ -64,8 +64,10 @@ def protect_firmware(infile, outfile, version, message):
     lines = [encode(i.strip()) for i in open("secret_output.txt", "r").readlines()] #read data from secret_output.txt
     signature = lines[0] 	#split data into signature
     keys = lines[1:] 		#split data into keys
+    for k in keys:
+        print(k)
     random.seed(time.time())
-    kn = random.randint(0, 199)
+    kn = random.randint(0, 2)
     k = keys[kn]
     aes = AES.new(k, AES.MODE_CBC)
     auth = aes.encrypt(signature) + struct.pack(
@@ -74,12 +76,12 @@ def protect_firmware(infile, outfile, version, message):
     metadata = struct.pack('<HHH', version, len(firmware), len(message))
 	# Init data
     data = [auth, metadata]
+    bl = open("../bootloader/src/bootloader.c","r").readlines()
     for i in range(0,len(firmware_and_message),128):
         c = firmware_and_message[i:i+128]
 		# encrypting the chunks, and putting the data in order
         hash = hashlib.sha256(c).digest() #hash of chunk
-        l = len(c)
-        kn = random.randint(0, 199) 
+        kn = random.randint(0, 2) 
         k = keys[kn]
         a = AES.new(k, AES.MODE_CBC, iv=get_random_bytes(16))
         en = b""
@@ -87,9 +89,9 @@ def protect_firmware(infile, outfile, version, message):
             en = a.encrypt(c)
         else:
             en = a.encrypt(pad(c, AES.block_size))
+        l = len(en)
         d = b""
         d += struct.pack("<hh", kn, l)
-        print(l)
         d += en
         d += hash
         d += a.IV
@@ -100,10 +102,6 @@ def protect_firmware(infile, outfile, version, message):
         convdata = [decode(i) + '\n' for i in data]
         of.writelines(convdata)
         
-	# Sanity check about write reliability, should print True
-    with open(outfile, 'r') as infile:
-        convdata = [encode(i) for i in infile.readlines()]
-        print(convdata==data)
 
 
 if __name__ == '__main__':

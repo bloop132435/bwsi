@@ -57,7 +57,6 @@ def encode(m):
 		k += bytes([i])
 	return k
 def main(ser, infile, debug):
-    
 	# read in what do send
     fp = open(infile, 'r')
     firmware_lines = [encode(i) for i in fp.readlines()]
@@ -68,21 +67,14 @@ def main(ser, infile, debug):
     resp = b'asdf'
     while resp != b'U':
         resp = ser.read()
-        print(resp)
-    if debug:
-        print("Done handshaking")
 	
     for line in firmware_lines:
 		# Send one line of data to bootloader
 #         ser.write(line)
-#         for i in line:
-#             ser.write(i)
-#             print(i)
-#             time.sleep(1)
         for i in range(0,len(line),4):
             ser.write(line[i:i+4])
             print(line[i:i+4])
-            time.sleep(0.1)
+            time.sleep(0.02)
         resp = ser.read()
         # Wait for an OK from the bootloader.
         if resp != RESP_OK:
