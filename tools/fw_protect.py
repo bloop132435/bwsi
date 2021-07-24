@@ -82,6 +82,12 @@ def protect_firmware(infile, outfile, version, message):
 		# encrypting the chunks, and putting the data in order
         kn = random.randint(0, 2) 
         k = keys[kn]
+        print("KEYNUM")
+        print(kn)
+        print("KEY")
+        print(k)
+        print("LENKEY")
+        print(len(k))
         a = AES.new(k, AES.MODE_CBC, iv=get_random_bytes(16))
         en = b""
         if len(c) %16 == 0:
