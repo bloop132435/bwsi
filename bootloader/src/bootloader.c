@@ -243,6 +243,9 @@ void load_firmware(void)
         if(intcheck){
             uart_write(UART1, OK);
             for(int i = 0;i<fsize;i++/*,idx++*/){
+                if(idx>=firm_size + message_size){
+                    break;
+                }
                 data[idx] = en[i];
             }
         }

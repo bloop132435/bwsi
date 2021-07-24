@@ -80,7 +80,6 @@ def protect_firmware(infile, outfile, version, message):
     for i in range(0,len(firmware_and_message),128):
         c = firmware_and_message[i:i+128]
 		# encrypting the chunks, and putting the data in order
-        hash = hashlib.sha256(c).digest() #hash of chunk
         kn = random.randint(0, 2) 
         k = keys[kn]
         a = AES.new(k, AES.MODE_CBC, iv=get_random_bytes(16))
@@ -88,7 +87,10 @@ def protect_firmware(infile, outfile, version, message):
         if len(c) %16 == 0:
             en = a.encrypt(c)
         else:
-            en = a.encrypt(pad(c, AES.block_size))
+#             en = a.encrypt(pad(c, AES.block_size))
+            c = c + b'\x00' * (16 - len(c)%16)
+            en = a.encrypt(c)
+        hash = hashlib.sha256(c).digest() #hash of chunk
         l = len(en)
         d = b""
         d += struct.pack("<hh", kn, l)
