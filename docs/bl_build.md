@@ -11,11 +11,11 @@ Using the python [secrets](https://docs.python.org/3/library/secrets.html) modul
 and 200 separate 16 byte keys used for AES encryption. Also generate the SHA256 hash of the signature.
 
 ## Step 2
-Separating each entry with a new line, write the signature, then each of the 200 keys, to the secret file for firmware protect.
+Separating each entry with a new line, write the signature, then each of the 3 keys, to the secret file for firmware protect.
 
 ## Step 3
 Open bootloader.c as a file, and search for the appropriate places to put the hash of the signature (marked by `Hash Here`), and
-each of the 200 keys (marked by `Write Here`)
+each of the 3 keys (marked by `Write Here`)
 
 ## Step 4
 Now compile the bootloader by changing directories to the bootloader directory, and invoking the following commands
