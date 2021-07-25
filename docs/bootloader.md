@@ -38,7 +38,7 @@ This function serves to load in the firmware from the FW_update tool. In chronol
     1. Receives the version, firm_size, and message_size as little endian shorts
     2. Put these variables all into the long long "metadata"
     3. Program the metadata into flash and compute the release message address
-5. Read in frames and perform integrity checks
+5. Read in frames, perform integrity checks, and write to flash
     1. Create data array which will store all the firmware until all the integrity checks are performed
     2. For each frame (while frame length isn't 0)
          1. Read in the key number used, the size of the frame, the encrypted data, the hash, and the iv
