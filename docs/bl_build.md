@@ -15,7 +15,7 @@ Separating each entry with a new line, write the signature, then each of the 3 k
 
 ## Step 3
 Open bootloader.c as a file, and search for the appropriate places to put the hash of the signature (marked by `Hash Here`), and
-each of the 200 keys (marked by `Write Here`)
+each of the 3 keys (marked by `Write Here`)
 
 ## Step 4
 Now compile the bootloader by changing directories to the bootloader directory, and invoking the following commands
