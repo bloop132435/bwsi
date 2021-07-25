@@ -51,12 +51,10 @@ extern int _binary_firmware_bin_size;
 
 
 // Device metadata
-uint16_t *fw_version_address = (uint16_t *) METADATA_BASE;
+uint16_t *fw_version_address = (uint16_t *) (METADATA_BASE );
 uint16_t *fw_size_address = (uint16_t *) (METADATA_BASE + 2);
 uint8_t *fw_release_message_address;
 
-// Firmware Buffer
-unsigned char data[FLASH_PAGESIZE];
 
 
 int main(void) {
@@ -132,13 +130,16 @@ void load_firmware(void)
      // maybe useful variables
     int read = 0;
     uint32_t rcv = 0;
-    unsigned char data[1100];
 
+    unsigned char ehash[32];
+    unsigned char en[128];
     uint32_t version = 0;
     uint32_t firm_size = 0;
+    unsigned char hash[32];
     uint32_t message_size = 0;
     // Authentication check
     unsigned char signature[256];
+    unsigned char data[2000];
     for(int i = 0;i<274;i++){
         data[i] = uart_read(UART1, BLOCKING, &read);
     }
@@ -202,7 +203,7 @@ void load_firmware(void)
         uart_write_str(UART2, "Debugging Version\n");
         version = old_version;
     }
-    long long metadata = (version & 0xffff) << 32 | (firm_size & 0xffff) << 16 | (message_size & 0xffff);
+    long long metadata = (message_size & 0xffff) << 32 | (firm_size & 0xffff) << 16 | (version & 0xffff);
     program_flash(METADATA_BASE, (uint8_t*)(&metadata), 6);
     uart_write(UART1, OK);
     fw_release_message_address = (uint8_t *) (FW_BASE + firm_size); 
@@ -216,67 +217,49 @@ void load_firmware(void)
         if(fsize==0){
             break;
         }
-        uart_write_str(UART2, "Read sizes");
-        unsigned char en[128];
         for(int i = 0;i<fsize;i++){
             en[i] = uart_read(UART1, BLOCKING, &read);
         }
-        uart_write_str(UART2, "Read ciphertext");
-        unsigned char hash[32];
         for(int i = 0;i<32;i++){
             hash[i] = uart_read(UART1, BLOCKING, &read);
         }
-        uart_write_str(UART2, "Read hash");
         for(int i = 0;i<16;i++){
             iv[i] = uart_read(UART1, BLOCKING, &read);
         }
-        uart_write_str(UART2, "Read iv");
         aes_decrypt(keys[kn],iv,en,fsize);
-        uart_write_str(UART2, "decrypted ciphertext");
-        unsigned char ehash[32];
         sha_hash(en,fsize,ehash);
-        uart_write_str(UART2, "hashed message");
         int intcheck = 1;
         for(int i = 0;i<32;i++){
             if(hash[i]!=ehash[i]){
                 intcheck = 0;
             }
         }
-        uart_write_str(UART2, "checked hash correct");
         if(intcheck){
             uart_write(UART1, OK);
-            for(int i = 0;i<fsize;i++/*,idx++*/){
+            for(int i = 0;i<fsize;i++){
                 data[idx] = en[i];
-                if(idx >= FLASH_PAGESIZE){
-                    if (program_flash(paddr, data, idx)){
-                        uart_write(UART1, ERROR); // Reject the firmware
-                        SysCtlReset(); // Reset device
-                        return;
-                    }
-                    idx = 0;
-                    paddr += FLASH_PAGESIZE;
-                }
+                idx++;
+//                 if(idx == 1024){
+//                     idx = 0;
+//                 }
+            }
+            uart_write_hex(UART2, idx);
+            uart_write_str(UART2, "done writing to data array");
+            if(idx  >= FLASH_PAGESIZE){
+                uart_write_str(UART2, "programming flash");
+                program_flash(paddr, data, idx);
+                uart_write_str(UART2, "programmed flash");
+                idx = 0;
+                paddr += FLASH_PAGESIZE;
             }
         }
         else{
+            uart_write_str(UART2, "failed hash check");
             uart_write(UART1, ERROR);
             return;
         }
     }while(fsize!=0);
-    if (program_flash(paddr, data, idx)){
-        uart_write(UART1, ERROR); // Reject the firmware
-        SysCtlReset(); // Reset device
-        return;
-    }
-//     int numpages = (idx - 1)/FLASH_PAGESIZE;
-//     for(int p = 0;p<numpages;p++){
-//         uint32_t paddr = FW_BASE + FLASH_PAGESIZE * p;
-//         unsigned int size = (firm_size + message_size - FLASH_PAGESIZE * p); 
-//         if(size>FLASH_PAGESIZE){
-//             size = FLASH_PAGESIZE;
-//         }
-//         program_flash(paddr, data + FLASH_PAGESIZE * p, size);
-//     }
+    program_flash(paddr, data, idx);
 }
 
 

@@ -64,8 +64,6 @@ def protect_firmware(infile, outfile, version, message):
     lines = [encode(i.strip()) for i in open("secret_output.txt", "r").readlines()] #read data from secret_output.txt
     signature = lines[0] 	#split data into signature
     keys = lines[1:] 		#split data into keys
-    for k in keys:
-        print(k)
     random.seed(time.time())
     kn = random.randint(0, 2)
     k = keys[kn]
@@ -82,12 +80,6 @@ def protect_firmware(infile, outfile, version, message):
 		# encrypting the chunks, and putting the data in order
         kn = random.randint(0, 2) 
         k = keys[kn]
-        print("KEYNUM")
-        print(kn)
-        print("KEY")
-        print(k)
-        print("LENKEY")
-        print(len(k))
         a = AES.new(k, AES.MODE_CBC, iv=get_random_bytes(16))
         en = b""
         if len(c) %16 == 0:
@@ -97,6 +89,8 @@ def protect_firmware(infile, outfile, version, message):
             c = c + b'\x00' * (16 - len(c)%16)
             en = a.encrypt(c)
         hash = hashlib.sha256(c).digest() #hash of chunk
+        print(a.IV)
+        print("")
         l = len(en)
         d = b""
         d += struct.pack("<hh", kn, l)
