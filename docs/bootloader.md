@@ -45,10 +45,4 @@ This function serves to load in the firmware from the FW_update tool. In chronol
          2. Decrypt the data using the correct key and iv
          3. Compute the hash and compare it to the received hash
          4. If the hashes are different, end. If not, add the decrypted data to the data array (using the variable idx to keep track of where to put it in the data array)
-7. Write data array to flash
-    1. Compute the number of pages using the idx variable
-    2. Program each page to flash
-          1. Compute the current place in flash and store it in the varriable paddr
-          2. Compute the remaining size of the firmware and store it in size
-          3. If the remaining size of the firmware is bigger than the FLASH_PAGESIZE, then set size = FLASH_PAGESIZE (since you can only program one page at a time)
-          4. Program the page to size
+    3. If the data array index reaches FLASH_PAGESIZE (1024), program the data array to flash and set index back to 0.
