@@ -132,7 +132,7 @@ void load_firmware(void)
      // maybe useful variables
     int read = 0;
     uint32_t rcv = 0;
-    unsigned char data[1000];
+    unsigned char data[1100];
 
     uint32_t version = 0;
     uint32_t firm_size = 0;
@@ -202,11 +202,14 @@ void load_firmware(void)
         uart_write_str(UART2, "Debugging Version\n");
         version = old_version;
     }
+    long long metadata = (version & 0xffff) << 32 | (firm_size & 0xffff) << 16 | (message_size & 0xffff);
+    program_flash(METADATA_BASE, (uint8_t*)(&metadata), 6);
     uart_write(UART1, OK);
     fw_release_message_address = (uint8_t *) (FW_BASE + firm_size); 
     // Read Frames + integrity checks
     int fsize=-1;
     int idx = 0;
+    int paddr = FW_BASE;
     do{
         kn = (uart_read(UART1, BLOCKING, &read)  | (uart_read(UART1, BLOCKING, &read) << 8));
         fsize = (uart_read(UART1, BLOCKING, &read)  | (uart_read(UART1, BLOCKING, &read) << 8));
@@ -243,10 +246,16 @@ void load_firmware(void)
         if(intcheck){
             uart_write(UART1, OK);
             for(int i = 0;i<fsize;i++/*,idx++*/){
-                if(idx>=firm_size + message_size){
-                    break;
-                }
                 data[idx] = en[i];
+                if(idx >= FLASH_PAGESIZE){
+                    if (program_flash(paddr, data, idx)){
+                        uart_write(UART1, ERROR); // Reject the firmware
+                        SysCtlReset(); // Reset device
+                        return;
+                    }
+                    idx = 0;
+                    paddr += FLASH_PAGESIZE;
+                }
             }
         }
         else{
@@ -254,15 +263,20 @@ void load_firmware(void)
             return;
         }
     }while(fsize!=0);
-    int numpages = (idx - 1)/FLASH_PAGESIZE;
-    for(int p = 0;p<numpages;p++){
-        uint32_t paddr = FW_BASE + FLASH_PAGESIZE * p;
-        unsigned int size = (firm_size + message_size - FLASH_PAGESIZE * p); 
-        if(size>FLASH_PAGESIZE){
-            size = FLASH_PAGESIZE;
-        }
-        program_flash(paddr, data + FLASH_PAGESIZE * p, size);
+    if (program_flash(paddr, data, idx)){
+        uart_write(UART1, ERROR); // Reject the firmware
+        SysCtlReset(); // Reset device
+        return;
     }
+//     int numpages = (idx - 1)/FLASH_PAGESIZE;
+//     for(int p = 0;p<numpages;p++){
+//         uint32_t paddr = FW_BASE + FLASH_PAGESIZE * p;
+//         unsigned int size = (firm_size + message_size - FLASH_PAGESIZE * p); 
+//         if(size>FLASH_PAGESIZE){
+//             size = FLASH_PAGESIZE;
+//         }
+//         program_flash(paddr, data + FLASH_PAGESIZE * p, size);
+//     }
 }
 
 
