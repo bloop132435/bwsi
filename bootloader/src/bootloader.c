@@ -168,10 +168,8 @@ void load_firmware(void)
     }
     if(authentic_sender) {
         uart_write(UART1, OK);
-        uart_write_str(UART2, "passed auth check");
     } else {
         uart_write(UART1, ERROR);
-        uart_write_str(UART2, "failed auth check");
         return;
     }
     // RECEIVING METADATA STUFF
@@ -195,12 +193,10 @@ void load_firmware(void)
     uint16_t old_version = *fw_version_address;
     if(version != 0 && version < old_version) {
         uart_write(UART1, ERROR); // Reject the metadata.
-        uart_write_str(UART2, "Version Rollback Error \n");
         SysCtlReset();                    // Reset device
         return;
     } else if(version == 0) {
         // If debug firmware, don't change version
-        uart_write_str(UART2, "Debugging Version\n");
         version = old_version;
     }
     long long metadata = (message_size & 0xffff) << 32 | (firm_size & 0xffff) << 16 | (version & 0xffff);
@@ -212,6 +208,7 @@ void load_firmware(void)
     int idx = 0;
     int paddr = FW_BASE;
     do{
+        // read in 1 frame
         kn = (uart_read(UART1, BLOCKING, &read)  | (uart_read(UART1, BLOCKING, &read) << 8));
         fsize = (uart_read(UART1, BLOCKING, &read)  | (uart_read(UART1, BLOCKING, &read) << 8));
         if(fsize==0){
@@ -226,6 +223,7 @@ void load_firmware(void)
         for(int i = 0;i<16;i++){
             iv[i] = uart_read(UART1, BLOCKING, &read);
         }
+        //decrypt frame and verify integrity
         aes_decrypt(keys[kn],iv,en,fsize);
         sha_hash(en,fsize,ehash);
         int intcheck = 1;
@@ -239,22 +237,16 @@ void load_firmware(void)
             for(int i = 0;i<fsize;i++){
                 data[idx] = en[i];
                 idx++;
-//                 if(idx == 1024){
-//                     idx = 0;
-//                 }
             }
-            uart_write_hex(UART2, idx);
-            uart_write_str(UART2, "done writing to data array");
+            
             if(idx  >= FLASH_PAGESIZE){
-                uart_write_str(UART2, "programming flash");
+                // program data to flash
                 program_flash(paddr, data, idx);
-                uart_write_str(UART2, "programmed flash");
                 idx = 0;
                 paddr += FLASH_PAGESIZE;
             }
         }
         else{
-            uart_write_str(UART2, "failed hash check");
             uart_write(UART1, ERROR);
             return;
         }

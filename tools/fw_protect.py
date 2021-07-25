@@ -89,8 +89,6 @@ def protect_firmware(infile, outfile, version, message):
             c = c + b'\x00' * (16 - len(c)%16)
             en = a.encrypt(c)
         hash = hashlib.sha256(c).digest() #hash of chunk
-        print(a.IV)
-        print("")
         l = len(en)
         d = b""
         d += struct.pack("<hh", kn, l)
