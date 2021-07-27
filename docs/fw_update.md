@@ -20,4 +20,10 @@ Send one line from the infile over serial to the bootloader.
 Wait for an OK from the bootloader. If the response is not an OK, raise an error.
 
 ## Step 4
+<<<<<<< HEAD
+=======
+After the OK from the bootloader return to [Step 2](#step-2) until the last line is sent.
+
+## Step 5
+>>>>>>> 4f056fd418647d1cc539e87e02142dce387bd297
 Send zero bytes to the bootloader
