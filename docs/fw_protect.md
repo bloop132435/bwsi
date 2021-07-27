@@ -11,8 +11,7 @@
 Read in the data from secret_output.txt, and split it up by lines into the signature and the keys.
 
 ## Step 2
-Choose a random number from 0-2 to decide which key to use for the signature. If the key happens to be less than 16 bytes long,
-which happens due to null bytes, then keep looking. When a suitable key is found, encrypt the signature using that key, then save the number of the key
+Choose a random number from 0-2 to decide which key to use for the signature. When a suitable key is found, encrypt the signature using that key, then save the number of the key
 used and the IV, so that the C code will be able to decrypt it.
 
 ## Step 3
