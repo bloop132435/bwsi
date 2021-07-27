@@ -21,7 +21,7 @@ Send one line from the infile over serial to the bootloader.
 Wait for an OK from the bootloader. If the response is not an OK, raise an error.
 
 ## Step 4
-After the OK from the bootloader, print the line number. Return to [Step 2](#step-2) until the last line is sent.
+After the OK from the bootloader return to [Step 2](#step-2) until the last line is sent.
 
 ## Step 5
 Send zero bytes to the bootloader
