@@ -19,7 +19,7 @@ each of the 3 keys (marked by `Write Here`)
 
 ## Step 4
 Now compile the bootloader by changing directories to the bootloader directory, and invoking the following commands
-```bash
+```console
 make clean
 make
 ```
